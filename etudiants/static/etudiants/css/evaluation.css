@@ -1,0 +1,344 @@
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f6fc;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #004080, #1976d2);
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    header h2 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+    nav ul li a:hover,
+    nav ul li a:focus {
+      background-color: rgba(255, 255, 255, 0.25);
+      outline: none;
+    }
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      .test-card .buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .test-card p {
+        margin-bottom: 15px;
+      }
+    }
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    #action-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button, .btn-link {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button:hover, .btn-link:hover {
+      background-color: #005bb5;
+    }
+    .btn-link.disabled {
+      background-color: gray !important;
+      cursor: not-allowed !important;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .test-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .test-card h3 {
+      margin: 0 0 10px;
+      color: #00274d;
+    }
+    .test-card p {
+      margin: 0 0 15px;
+      color: #444;
+      font-size: 1em;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+    }
+    .test-card button, .test-card a.btn-link {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .test-card button:hover, .test-card a.btn-link:hover {
+      background-color: #005bb5;
+    }
+    .status {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 0.9em;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      flex-direction: column;
+      text-align: right;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .status small {
+      font-weight: normal;
+      color: #333;
+    }
+    .termine::before {
+      content: "✔️";
+      font-size: 1em;
+    }
+    .non-termine::before {
+      content: "⏳";
+      font-size: 1em;
+    }
+    .termine {
+      color: green;
+    }
+    .non-termine {
+      color: red;
+    }
+    #filter-panel {
+      background: #e3f2fd;
+      border: 2px solid #1976d2;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      max-width: 400px;
+      display: none;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      color: #004080;
+    }
+    #filter-panel label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 0.95em;
+    }
+    #filter-panel select,
+    #filter-panel input[type="number"] {
+      width: 100%;
+      padding: 6px 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 2px solid #1976d2;
+      font-size: 1em;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-align: left;
+      animation: fadeIn 0.3s ease-out;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal h3 {
+      margin-top: 0;
+      color: #004080;
+    }
+    .modal label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+    .modal input,
+    .modal textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    .modal textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .modal .actions {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .modal .actions button {
+      margin-left: 10px;
+    }
+    #add-devoir-btn {
+      background-color: #004080;color: white;
+    }
+    /* Message notifications style */
+    #message-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 300px;
+      z-index: 1100;
+    }
+    .message {
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateX(100%);
+      animation: slideIn 0.5s forwards, fadeOut 0.5s 3.5s forwards;
+      font-weight: 700;
+      user-select: none;
+    }
+    .message.error {
+      background-color: #d32f2f;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  }
+  .modal h3 {
+    margin-top: 0;
+    color: #004080;
+  }
+  .modal p {
+    margin: 1rem 0;
+    line-height: 1.4;
+  }
+  .button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eee;
+  color: #333;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.action-btn:hover {
+  background-color: #ddd;
+}
+
+.action-btn.rendu {
+  background-color: #00796b;
+  color: white;
+}
+
+.action-btn.rendu:hover {
+  background-color: #00695c;
+}

@@ -1,0 +1,209 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/page.css' %}">
+  <title>ISFAD </title>
+
+  <!-- Police Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<header>
+  <section id="az" class="top-bar">
+    <div class="top-bar-left">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.2X6W8pBFaTD6XaPB1QobJAHaFq?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Cahier ouvert" />
+      <span>E-formation</span>
+    </div>
+    <div class="top-bar-right">
+      <button class="header-btn" id="btn-connexion-top" ><a href="{% url 'connexion' %}">Connexion</a></button>
+      <button class="header-btn" id="btn-visiter-top">Visiter</button>
+    </div>
+  </section>
+
+  <section class="hero">
+    <h1 class="gsap-title">Bienvenue à l’ISFAD</h1>
+    <p class="gsap-desc">L'excellence de la formation à distance au service de votre avenir académique et professionnel.</p>
+  </section>
+</header>
+
+<section class="main-section">
+  <div class="card">
+    <h2>Nos Projets</h2>
+    <p>L'ISFAD lance chaque année plusieurs projets orientés vers l'employabilité, l'innovation pédagogique, la recherche appliquée, les stages professionnels, et la coopération universitaire...</p>
+    <div class="actions">
+      <button class="btn-blue" onclick="openModal('projets')">Voir plus</button>
+      <button class="btn-red">Un autre</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Nos Objectifs</h2>
+    <p style="margin-top:1rem; font-size:0.9rem; color:#333; text-align: left;">
+      Depuis plus de 20 ans, l'ISFAD s'affirme comme une référence nationale en matière de formation en administration, en gestion publique et en développement local, avec une vision tournée vers l'avenir...
+    </p>
+    <div class="actions">
+      <button class="btn-blue" onclick="openModal('objectifs')">Voir plus</button>
+      <button class="btn-red">Un autre</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>À propos</h2>
+    <p>Créé en 2004 sous le N°2004/497/MESRS/CAB, l'ISFAD est une institution publique à vocation d'enseignement et de recherche à distance de niveau supérieur.</p>
+    <div class="actions">
+      <button class="btn-blue" onclick="openModal('apropos')">Voir plus</button>
+      <button class="btn-red">Un autre</button>
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal" id="popup" aria-modal="true" role="dialog" tabindex="-1">
+  <div class="modal-content" role="document">
+    <button class="close-btn" aria-label="Fermer la popup" onclick="closeModal()">X</button>
+    <h3 id="modal-title">Titre</h3>
+    <p id="modal-text">Contenu ici...</p>
+    <div class="images" id="modal-images"></div>
+  </div>
+</div>
+
+<section style="padding: 60px 40px; background-color: #eaf1ff;" id="pourquoi">
+    <h2 data-aos="fade-down" data-aos-duration="900" data-aos-delay="500">Pourquoi choisir l’ISFAD ?</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+
+      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="900">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Flexibilité">
+        <h3>Flexibilité</h3>
+        <p>Étudiez à votre rythme, selon vos disponibilités, où que vous soyez.</p>
+      </div>
+
+      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="950">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Qualité">
+        <h3>Qualité académique</h3>
+        <p>Des enseignants qualifiés et des programmes validés par le ministère.</p>
+      </div>
+
+      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
+        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Accompagnement">
+        <h3>Encadrement personnalisé</h3>
+        <p>Un suivi pédagogique régulier, à distance ou en présentiel selon les besoins.</p>
+      </div>
+
+      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1150">
+        <img src="https://cdn-icons-png.flaticon.com/512/681/681392.png" alt="Technologie">
+        <h3>Plateforme moderne</h3>
+        <p>Utilisation d’outils numériques performants pour l’apprentissage en ligne.</p>
+      </div>
+
+    </div>
+  </section>
+<footer>
+  &copy; 2025 ISFAD - Tous droits réservés. Alimenté par <strong><a href="#">ISFAD</a></strong>
+</footer>
+
+<!-- GSAP CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  const data = {
+    projets: {
+      title: "Nos Projets",
+      text: "ISFAD initie des projets pédagogiques innovants, soutient l'entrepreneuriat, développe des centres de recherche appliquée, met en place des partenariats internationaux et intègre les technologies numériques dans l'enseignement. Les étudiants participent à des concours, projets communautaires, hackathons, et reçoivent un accompagnement vers l'emploi et l'auto-emploi.",
+      images: [
+        "https://source.unsplash.com/200x140/?education",
+        "https://source.unsplash.com/200x140/?students",
+        "https://source.unsplash.com/200x140/?research",
+        "https://source.unsplash.com/200x140/?library",
+        "https://source.unsplash.com/200x140/?project",
+        "https://source.unsplash.com/200x140/?university"
+      ]
+    },
+    objectifs: {
+      title: "Nos Objectifs",
+      text: "Notre mission est de former des experts en administration publique, d’améliorer la gouvernance, de favoriser l’innovation locale, et d’éduquer à l’éthique, la transparence et le développement durable. Nous visons aussi l'autonomisation des jeunes et femmes, et la transformation numérique des services publics.",
+      images: [
+        "https://source.unsplash.com/200x140/?goal",
+        "https://source.unsplash.com/200x140/?strategy",
+        "https://source.unsplash.com/200x140/?growth",
+        "https://source.unsplash.com/200x140/?teamwork"
+      ]
+    },
+    apropos: {
+      title: "À propos",
+      text: "L’ISFAD est reconnu pour la qualité de son enseignement à distance, son ouverture internationale, et son engagement envers l’accessibilité et l’innovation pédagogique.",
+      images: [
+        "https://source.unsplash.com/200x140/?about",
+        "https://source.unsplash.com/200x140/?university-campus",
+        "https://source.unsplash.com/200x140/?library",
+        "https://source.unsplash.com/200x140/?students"
+      ]
+    }
+  };
+
+  const popup = document.getElementById("popup");
+  const modalTitle = document.getElementById("modal-title");
+  const modalText = document.getElementById("modal-text");
+  const modalImages = document.getElementById("modal-images");
+
+  function openModal(section) {
+    const info = data[section];
+    if (!info) return;
+
+    modalTitle.textContent = info.title;
+    modalText.textContent = info.text;
+
+    // Nettoyer images avant de remplir
+    modalImages.innerHTML = "";
+    info.images.forEach((src, i) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = info.title + " image " + (i + 1);
+      img.style.animation = `fadeInUp 0.5s ease forwards`;
+      img.style.animationDelay = (0.2 * i) + "s";
+      modalImages.appendChild(img);
+    });
+
+    popup.classList.add("show");
+    popup.focus();
+  }
+
+  function closeModal() {
+    popup.classList.remove("show");
+  }
+
+  // Fermer modal au clic hors contenu
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) closeModal();
+  });
+
+  // Gestion clavier : fermer modal avec Echap
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && popup.classList.contains("show")) {
+      closeModal();
+    }
+  });
+
+  // GSAP animations
+  window.onload = () => {
+    gsap.to(".gsap-title", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out", delay: 0.5 });
+    gsap.to(".gsap-desc", { opacity: 1, y: 0, duration: 1.7, ease: "power3.out", delay: 1 });
+  };
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/profil.css' %}">
+
+  <title>ISFAD | profil </title>
+
+</head>
+<body>
+
+  <!-- Message succès -->
+  <div id="message-success">Modifications enregistrées avec succès !</div>
+
+  <div id="menu">
+    <div class="breadcrumbs" style="font-size: 14px; color: #555;">
+      <a href="{% url 'accueil'%}">Accueil</a> &gt;
+      <a href="{% url 'choix_cours'%}">Cours</a> &gt;
+      <span style="font-weight: bold;">Profil</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Section profil -->
+    <div class="profile">
+      <h1>Profil Utilisateur</h1>
+
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Photo Profil" class="profile-picture" />
+
+      <div class="profile-item">
+        <span class="label">Nom complet :</span>
+        <span class="value">Amara Fofana</span>
+      </div>
+
+      <div class="profile-item">
+        <span class="label">Email :</span>
+        <span class="value">amara.fofana@example.com</span>
+      </div>
+
+      <div class="profile-item">
+        <span class="label">Téléphone :</span>
+        <span class="value">+224 600 00 00 00</span>
+      </div>
+
+      <div class="profile-item">
+        <span class="label">Adresse :</span>
+        <span class="value">Conakry, Guinée</span>
+      </div>
+
+      <div class="profile-item">
+        <span class="label">Date de naissance :</span>
+        <span class="value">15 juillet 1990</span>
+      </div>
+
+      <button class="btn-edit">
+        <a href="{% url 'modification_compte' %}" style="color: white; text-decoration: none;">Modifier le profil</a>
+      </button>
+    </div>
+
+    <!-- Section évaluations -->
+    <div class="evaluations">
+      <h2>Suivi des évaluations</h2>
+
+      <div class="eval-item">
+        <strong>Statistique Descriptive</strong>
+        <span>Note : 16.5 / 20 — Date : 12 juillet 2025</span>
+      </div>
+
+      <div class="eval-item">
+        <strong>Développement Web</strong>
+        <span>Note : 15.0 / 20 — Date : 05 juillet 2025</span>
+      </div>
+
+      <div class="eval-item">
+        <strong>Économie Générale</strong>
+        <span>Note : 17.2 / 20 — Date : 28 juin 2025</span>
+      </div>
+
+      <div class="eval-item">
+        <strong>Anglais Professionnel</strong>
+        <span>Note : 14.8 / 20 — Date : 22 juin 2025</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Au chargement du DOM
+    window.addEventListener('DOMContentLoaded', () => {
+      // Vérifie si l'URL contient ?success=1
+      if (getParam('success') === '1') {
+        const msg = document.getElementById('message-success');
+
+        // Affiche le message avec animation
+        msg.classList.add('show');
+
+        // Après 3.5 secondes, on masque le message avec animation
+        setTimeout(() => {
+          msg.classList.remove('show');
+          msg.classList.add('hide');
+
+          // Après la fin de l'animation, on masque complètement l'élément
+          setTimeout(() => {
+            msg.style.display = 'none';
+          }, 500); // durée animation slideFadeOut
+
+          // Nettoie l'URL en supprimant le paramètre 'success' sans recharger la page
+          if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.searchParams.delete('success');
+            window.history.replaceState(null, '', url.toString());
+          }
+        }, 3500);
+      }
+    });
+
+    /**
+     * Récupère la valeur d'un paramètre dans l'URL
+     * @param {string} param Nom du paramètre
+     * @returns {string|null}
+     */
+    function getParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+  </script>
+</body>
+</html>

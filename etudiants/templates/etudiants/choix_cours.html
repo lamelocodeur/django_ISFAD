@@ -1,0 +1,387 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/choix_cours.css' %}">
+  <title> ISFAD | Gestion des Cours</title>
+</head>
+<body>
+
+    <!-- MENU FIXE -->
+  <div id="menu" role="navigation" aria-label="Menu principal">
+    <div class="breadcrumbs" aria-label="Fil d'Ariane">
+      <a href="{% url 'accueil' %}">Accueil</a> &gt;
+      <a href="{% url 'licence' %}">Licence</a> &gt;
+      <span aria-current="page" style="font-weight:bold; color:#222;">Cours</span>
+    </div>
+    <nav id="az">
+      <a href="{% url 'espace_etudiant' %}"><i class="fas fa-user-graduate" style="color: #2196f3;"></i>Espace Etudiant </a>
+      <a href="{% url 'parametres' %}">⚙️Paramètres</a>
+    </nav>
+
+    <div class="right-filters">
+      <button id="filter-toggle-btn" aria-expanded="false" aria-controls="filter-popup" aria-label="Afficher ou masquer le panneau de filtres">Filtrer</button>
+    </div>
+  </div>
+
+  <main id="main-content">
+
+    <h1>Gestion des Cours</h1>
+
+    <!-- Section Cours récents + filtre matiere -->
+    <section id="cours-recents-filter" aria-label="Filtres pour cours récents et matières">
+      <div>
+        <input type="checkbox" id="filterRecent" checked />
+        <label for="filterRecent">Afficher uniquement les cours récents</label>
+      </div>
+      <div>
+        <label for="filterMatiere">Filtrer par matière :</label>
+        <select id="filterMatiere" aria-label="Sélectionner une matière">
+          <option value="toutes" selected>Toutes</option>
+          <option value="Mathématiques">Mathématiques</option>
+          <option value="Physique">Physique</option>
+          <option value="Informatique">Informatique</option>
+          <option value="Chimie">Chimie</option>
+          <option value="Biologie">Biologie</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Conteneur cartes cours -->
+    <section class="cours-container" id="coursContainer" aria-live="polite" aria-label="Liste des cours">
+      <!-- JS injectera ici -->
+    </section>
+
+  </main>
+
+  <!-- POPUP Voir plus -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="popup" id="popupVoirPlus" role="dialog" aria-modal="true" aria-labelledby="popupTitle" tabindex="-1">
+    <h3 id="popupTitle">Détails des cours</h3>
+
+    <section id="filter-section">
+      <h4>Filtres</h4>
+      <label><input type="checkbox" id="filterRecentPopup" checked /> Cours récents uniquement</label><br/>
+      <label><input type="checkbox" id="filterMatieresPopup" checked /> Afficher matières</label>
+    </section>
+
+    <section id="cours-recent-section-popup">
+      <h4>Cours récents</h4>
+      <ul id="coursRecentsListPopup" style="padding-left: 20px; margin-top: 0;"></ul>
+    </section>
+
+    <section id="matieres-section-popup">
+      <h4>5 Matières principales</h4>
+      <ul>
+        <li>Mathématiques</li>
+        <li>Physique</li>
+        <li>Informatique</li>
+        <li>Chimie</li>
+        <li>Biologie</li>
+      </ul>
+    </section>
+
+    <button class="close-popup" aria-label="Fermer le popup">Fermer</button>
+  </aside>
+
+  <!-- Section Calendrier + Événements -->
+  <section id="calendar" aria-label="Calendrier et événements à venir" id="extra-cards">
+    <div aria-label="Calendrier mensuel" id="calendar-body" class="calendar-body" role="grid" tabindex="0">
+      <!-- JS génère le calendrier -->
+    </div>
+    <div aria-label="Événements à venir">
+      <h3>Événements à venir</h3>
+      <ul id="eventsList" aria-live="polite"></ul>
+    </div>
+  </section>
+<script>
+const cours = [
+  { id: 'cours1', titre: 'Mathématiques', prof: 'M. Diallo', contact: 'diallo@exemple.com', progression: 20, dateRecente: '2025-07-30', matiere: 'Mathématiques', module: 'Premier' },
+  { id: 'cours2', titre: 'Physique', prof: 'Mme Camara', contact: 'camara@exemple.com', progression: 40, dateRecente: '2025-07-28', matiere: 'Physique', module: 'Second' },
+  { id: 'cours3', titre: 'Informatique', prof: 'M. Sylla', contact: 'sylla@exemple.com', progression: 60, dateRecente: '2025-07-31', matiere: 'Informatique', module: 'Premier' },
+  { id: 'cours4', titre: 'Chimie', prof: 'Mme Barry', contact: 'barry@exemple.com', progression: 15, dateRecente: '2025-07-27', matiere: 'Chimie', module: 'Second' },
+  { id: 'cours5', titre: 'Biologie', prof: 'M. Kouyaté', contact: 'kouyate@exemple.com', progression: 75, dateRecente: '2025-07-25', matiere: 'Biologie', module: 'Premier' },
+  { id: 'cours6', titre: 'Histoire', prof: 'Mme Touré', contact: 'toure@exemple.com', progression: 30, dateRecente: '2025-07-29', matiere: 'Histoire', module: 'Second' },
+];
+
+// Événements calendaires exemple
+const events = [
+  { date: '2025-08-05', titre: 'Rentrée académique' },
+  { date: '2025-08-12', titre: 'Conférence sur l’innovation pédagogique' },
+  { date: '2025-08-20', titre: 'Début des examens semestriels' },
+  { date: '2025-08-25', titre: 'Journée portes ouvertes' }
+];
+
+// DOM references
+const coursContainer = document.getElementById('coursContainer');
+const mainTitle = document.querySelector('h1');
+const filterToggleBtn = document.getElementById('filter-toggle-btn');
+const calendarBody = document.getElementById('calendar-body');
+const eventsList = document.getElementById('eventsList');
+const overlay = document.getElementById('overlay');
+
+
+
+// Panneau filtre avancé (barre progression + select modules)
+let filterPanel = document.createElement('aside');
+filterPanel.id = 'filterPanel';
+filterPanel.style.cssText = `
+  position: fixed;
+  top: 60px; right: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  padding: 1rem 1.5rem;
+  width: 280px;
+  display: none;
+  z-index: 11000;
+`;
+filterPanel.innerHTML = `
+  <h3>Filtres avancés</h3>
+  <label for="progressRange">Progression max : <span id="progressValue">100</span>%</label>
+  <input type="range" id="progressRange" min="0" max="100" value="100" />
+  <br/><br/>
+  <label for="moduleSelect">Module :</label>
+  <select id="moduleSelect" aria-label="Sélection du module">
+    <option value="Tous">Tous les modules</option>
+    <option value="Premier">Premier</option>
+    <option value="Second">Second</option>
+  </select>
+  <br/><br/>
+  <button id="filterCloseBtn" aria-label="Fermer le panneau de filtres">Fermer</button>
+`;
+document.body.appendChild(filterPanel);
+
+const progressRange = document.getElementById('progressRange');
+const progressValue = document.getElementById('progressValue');
+const moduleSelect = document.getElementById('moduleSelect');
+const filterCloseBtn = document.getElementById('filterCloseBtn');
+
+// Titre modifié
+mainTitle.textContent = 'Tableau de bord';
+
+// Fonction afficher les cours avec filtres avancés
+function afficherCours() {
+  // Lecture filtres
+  const progMax = parseInt(progressRange.value) || 100;
+  const moduleFilter = moduleSelect.value;
+
+  // Charger cours stockés progression
+  cours.forEach(c => {
+    const savedProg = localStorage.getItem('progress_' + c.id);
+    if (savedProg) c.progression = parseInt(savedProg);
+  });
+
+  // Filtrage
+  let filtered = cours.filter(c => c.progression <= progMax);
+  if (moduleFilter !== 'Tous') filtered = filtered.filter(c => c.module === moduleFilter);
+
+  coursContainer.innerHTML = '';
+
+  filtered.forEach(c => {
+    const card = document.createElement('article');
+    card.className = 'cours-card';
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Cours ${c.titre}, progression ${c.progression} pour cent`);
+
+    card.innerHTML = `
+      <div class="cours-title">${c.titre}</div>
+      <div class="progress-container" title="Cliquez pour augmenter la progression">
+        <div class="progress-percent">${c.progression}%</div>
+        <div class="progress-bar-background" onclick="changerProgression('${c.id}')">
+          <div class="progress-bar-fill" style="width: ${c.progression}%;"></div>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn-info" onclick="voirProf('${c.prof}', '${c.contact}', '${c.titre}')">Infos Prof</button>
+        <button class="btn-voir" onclick="consulterCours('${c.id}')">Consulter</button>
+      </div>
+    `;
+    coursContainer.appendChild(card);
+
+    // Ajouter event click sur la carte pour afficher cours récents et sauvegarder
+    card.addEventListener('click', () => {
+      ajouterCoursRecent(c.titre);
+    });
+  });
+}
+
+// Augmente progression par 25%
+function changerProgression(id) {
+  const coursItem = cours.find(c => c.id === id);
+  if (!coursItem) return;
+  coursItem.progression += 25;
+  if (coursItem.progression > 100) coursItem.progression = 0;
+  localStorage.setItem('progress_' + id, coursItem.progression);
+  afficherCours();
+}
+
+// Popup infos prof
+const popupProf = document.createElement('div');
+popupProf.className = 'popup';
+popupProf.setAttribute('role', 'dialog');
+popupProf.setAttribute('aria-modal', 'true');
+popupProf.style.display = 'none';
+popupProf.style.maxWidth = '400px';
+popupProf.style.padding = '1.5rem 2rem';
+popupProf.innerHTML = `
+  <h3>Informations du professeur</h3>
+  <p id="popupProfContent"></p>
+  <button class="close-popup" aria-label="Fermer la fenêtre">Fermer</button>
+`;
+document.body.appendChild(popupProf);
+const popupProfContent = popupProf.querySelector('#popupProfContent');
+popupProf.querySelector('button.close-popup').addEventListener('click', () => {
+  popupProf.style.display = 'none';
+  overlay.style.display = 'none';
+});
+
+// Voir prof avec nom + contact
+function voirProf(nom, contact, coursTitre) {
+  popupProfContent.innerHTML = `<strong>${nom}</strong><br>Contact : 611892595<br><br>Professeur responsable du cours "${coursTitre}".`;
+  popupProf.style.display = 'block';
+  overlay.style.display = 'block';
+  popupProf.focus();
+}
+
+// Consulter :
+function consulterCours(id) {
+  const coursItem = cours.find(c => c.id === id);
+  if (!coursItem) return;
+  // Exemple URL avec paramètre query
+  window.location.href = `{% url 'section_cours' %}?titre=${encodeURIComponent(coursItem.titre)}`;
+}
+
+// --- Calendrier interactif ---
+function genererCalendrier() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  const firstDay = new Date(year, month, 1);
+  const startDay = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  calendarBody.innerHTML = '';
+
+  const joursSemaine = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  joursSemaine.forEach(j => {
+    const div = document.createElement('div');
+    div.textContent = j;
+    div.style.fontWeight = '700';
+    div.style.color = '#005fa3';
+    calendarBody.appendChild(div);
+  });
+
+  for (let i = 0; i < startDay; i++) {
+    const emptyDiv = document.createElement('div');
+    calendarBody.appendChild(emptyDiv);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.textContent = d;
+    dayDiv.tabIndex = 0; // pour focus clavier
+    dayDiv.style.cursor = 'pointer';
+
+    // Highlight today
+    if (d === today.getDate()) {
+      dayDiv.classList.add('today');
+    }
+
+    // Click affiche événements ce jour
+    dayDiv.addEventListener('click', () => {
+      afficherEvenementsJour(d, month + 1, year);
+    });
+
+    calendarBody.appendChild(dayDiv);
+  }
+}
+
+// Affiche événements du jour cliqué ou message aucun événement
+function afficherEvenementsJour(day, month, year) {
+  const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const eventsDuJour = events.filter(e => e.date === dateStr);
+  eventsList.innerHTML = '';
+
+  if (eventsDuJour.length === 0) {
+    eventsList.innerHTML = '<li>Aucun événement prévu</li>';
+  } else {
+    eventsDuJour.forEach(ev => {
+      const li = document.createElement('li');
+      li.textContent = `${ev.date} : ${ev.titre}`;
+      eventsList.appendChild(li);
+    });
+  }
+}
+
+// --- Section cours récents persistante ---
+function ajouterCoursRecent(titre) {
+  // Récupérer liste existante
+  let recents = JSON.parse(localStorage.getItem('coursRecents')) || [];
+
+  // Ajouter si pas déjà présent, limiter à 5 max
+  if (!recents.includes(titre)) {
+    recents.unshift(titre);
+    if (recents.length > 5) recents.pop();
+  }
+
+  localStorage.setItem('coursRecents', JSON.stringify(recents));
+  afficherCoursRecents();
+}
+
+// Affiche la section cours récents
+function afficherCoursRecents() {
+  let recents = JSON.parse(localStorage.getItem('coursRecents')) || [];
+  if (recents.length === 0) {
+    sectionCoursRecents.style.display = 'none';
+    return;
+  }
+  sectionCoursRecents.style.display = 'block';
+  coursRecentsList.innerHTML = recents.map(c => `<li>${c}</li>`).join('');
+}
+
+// --- Gestion panneau filtre ---
+filterToggleBtn.addEventListener('click', () => {
+  if (filterPanel.style.display === 'block') {
+    filterPanel.style.display = 'none';
+    filterToggleBtn.setAttribute('aria-expanded', 'false');
+  } else {
+    filterPanel.style.display = 'block';
+    filterToggleBtn.setAttribute('aria-expanded', 'true');
+  }
+});
+
+filterCloseBtn.addEventListener('click', () => {
+  filterPanel.style.display = 'none';
+  filterToggleBtn.setAttribute('aria-expanded', 'false');
+});
+
+// Écouteurs filtres avancés
+progressRange.addEventListener('input', () => {
+  progressValue.textContent = progressRange.value;
+  afficherCours();
+});
+moduleSelect.addEventListener('change', afficherCours);
+
+// Chargement initial
+afficherCours();
+genererCalendrier();
+afficherEvenementsJour(new Date().getDate(), new Date().getMonth() + 1, new Date().getFullYear());
+afficherCoursRecents();
+
+// Overlay ferme popups
+overlay.addEventListener('click', () => {
+  popupProf.style.display = 'none';
+  filterPanel.style.display = 'none';
+  filterToggleBtn.setAttribute('aria-expanded', 'false');
+  overlay.style.display = 'none';
+});
+</script>
+</body>
+</html>

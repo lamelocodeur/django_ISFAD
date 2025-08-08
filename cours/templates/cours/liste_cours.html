@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <!-- etudiants/liste_cours.html -->
+<h1>Liste des cours</h1>
+<ul>
+  {% for c in cours %}
+    <li>{{ c.nom }} - {{ c.chapitre }}</li>
+  {% empty %}
+    <li>Aucun cours trouvé</li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>

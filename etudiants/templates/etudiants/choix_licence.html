@@ -1,0 +1,57 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/licence.css' %}">
+
+  <title>ISFAD | Licences </title>
+  </head>
+<body>
+    <div id="menu">
+    <div class="breadcrumbs">
+      <a href="{% url 'accueil'%}">Accueil</a> &gt;
+      <span style="font-weight: bold;">Licences</span>
+    </div>
+
+    <nav>
+      <a href="{% url 'parametres'%}">⚙️ Paramètres</a>
+      <a href="{% url 'page'%}"><i class="fas fa-sign-out-alt" ></i> Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="card">
+    <h2>Choisissez votre Licence</h2>
+
+    <div class="licence">
+      <div class="licence-title">Licence 1</div>
+      <div class="group-links">
+        <a href="{% url 'choix_cours'%}">Groupe A</a>
+        <a href="{% url 'choix_cours'%}">Groupe B</a>
+      </div>
+    </div>
+
+    <div class="licence">
+      <div class="licence-title">Licence 2</div>
+      <div class="group-links">
+        <a href="{% url 'choix_cours'%}">Groupe A</a>
+        <a href="{% url 'choix_cours'%}">Groupe B</a>
+      </div>
+    </div>
+
+    <div class="licence">
+      <div class="licence-title">Licence 3</div>
+      <div class="group-links">
+        <a href="{% url 'choix_cours'%}">Groupe A</a>
+        <a href="{% url 'choix_cours'%}">Groupe B</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

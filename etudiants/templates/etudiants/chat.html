@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <title>Liste des Cours avec Chapitres et Leçons</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fc;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 70px; /* espace pour le menu fixé */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #2a3d66;
+    }
+
+    ul.course-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .course-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .course-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 20px;
+    }
+
+    .chapters-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .chapter-card {
+      background: #f9fafb;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      transition: background-color 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation-fill-mode: forwards;
+    }
+    .chapter-card:hover {
+      background-color: #e0e7ff;
+    }
+
+    .chapter-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2a3d66;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .lesson-subtitle {
+      font-size: 14px;
+      font-weight: normal;
+      color: #555;
+      text-align: center;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .line {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .pdf-link, .video-link {
+      padding: 8px 14px;
+      background-color: #edf2fb;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #2a3d66;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .desc-button, .pdf-button {
+      padding: 6px 12px;
+      background-color: #cbd5e1;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #1e293b;
+      user-select: none;
+    }
+
+    .suivi-button {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      min-width: 100px;
+    }
+
+    .suivi-true {
+      background-color: #38a169; /* vert */
+      color: white;
+    }
+
+    .suivi-false {
+      background-color: #e53e3e; /* rouge */
+      color: white;
+    }
+
+    .pdf-link:hover,
+    .video-link:hover,
+    .desc-button:hover,
+    .pdf-button:hover,
+    .suivi-button:hover {
+      opacity: 0.9;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Menu fixé en haut */
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 10000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu nav a {
+      margin-left: 15px;
+      color: #2a3d66;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #menu div.breadcrumbs a {
+      color: #2a3d66;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+<body>
+<section id="chat-section" style="border:1px solid #ccc; border-radius:10px; max-width:700px; margin:20px auto; background:#f9f9f9; padding:10px;">
+  <header style="background:#0d6efd; color:#fff; padding:10px; border-radius:8px; font-size:1.3rem; text-align:center;">
+    💬 Chat Groupe ISFAD
+  </header>
+
+  <ul id="messages" style="list-style:none; padding:10px; height:300px; overflow-y:auto; margin:0; background:#fff; border-radius:8px;"></ul>
+
+  <form id="form" style="display:flex; margin-top:10px;">
+    <input id="input" autocomplete="off" placeholder="Tapez votre message ici..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc;"/>
+    <button style="margin-left:10px; padding:10px 15px; border:none; border-radius:8px; background:#0d6efd; color:#fff; cursor:pointer;">Envoyer</button>
+  </form>
+</section>
+  <div id="menu">
+    <nav>
+      <a href="{% url 'espace_etudiant'%}"><i class="fas fa-user-graduate" style="color: #2196f3;"></i> Espace Etudiants</a>
+      <a href="{% url 'profil'%}"><i class="fas fa-user"></i> Profil</a>
+      <a href="{% url 'parametres'%}"><i class="fas fa-cog"></i> Parametres</a>
+    </nav>
+  </div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const form = document.getElementById('form');
+  const input = document.getElementById('input');
+  const messages = document.getElementById('messages');
+
+  let username = localStorage.getItem('chat_username');
+  if (!username) {
+    username = prompt("Entrez votre nom :") || "Anonyme";
+    localStorage.setItem('chat_username', username);
+  }
+
+  function addMessage(msg) {
+    const item = document.createElement('li');
+    const date = new Date(msg.timestamp);
+    item.classList.add(msg.user === username ? 'self' : '');
+    item.style.background = (msg.user === username) ? '#dcf8c6' : 'white';
+    item.style.marginBottom = '10px';
+    item.style.padding = '10px 15px';
+    item.style.borderRadius = '12px';
+    item.style.maxWidth = '75%';
+    item.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+    item.style.wordWrap = 'break-word';
+    item.style.whiteSpace = 'pre-wrap';
+
+    item.innerHTML = `<strong>${escapeHtml(msg.user)}</strong><br>${escapeHtml(msg.text)}<span style="font-size:0.75rem; color:#888; display:block; margin-top:4px;">${formatDate(date)}</span>`;
+    messages.appendChild(item);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  socket.on('previous messages', (oldMessages) => {
+    messages.innerHTML = '';
+    oldMessages.forEach(addMessage);
+  });
+
+  socket.on('chat message', (msg) => {
+    addMessage(msg);
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value.trim()) {
+      const now = new Date();
+      socket.emit('chat message', {
+        user: username,
+        text: input.value.trim(),
+        timestamp: now.toISOString()
+      });
+      input.value = '';
+    }
+  });
+
+  function formatDate(date) {
+    const now = new Date();
+    const diffTime = now - date;
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    const timeStr = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
+    if (diffTime < oneDay && date.getDate() === now.getDate()) {
+      return timeStr;
+    } else if (diffTime < 2 * oneDay && date.getDate() === now.getDate() - 1) {
+      return `Hier - ${timeStr}`;
+    } else {
+      const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+      return `${jours[date.getDay()]} ${date.getDate()} ${date.toLocaleString('fr-FR', { month: 'long' })} - ${timeStr}`;
+    }
+  }
+
+  function pad(n) {
+    return n < 10 ? '0' + n : n;
+  }
+</script>
+</body>
+</html>

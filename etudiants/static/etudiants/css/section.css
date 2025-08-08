@@ -1,0 +1,212 @@
+body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fc;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 70px; /* espace pour le menu fixé */
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #2a3d66;
+    }
+
+    ul.course-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .course-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .course-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 20px;
+    }
+
+    .chapters-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .chapter-card {
+      background: #f9fafb;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      transition: background-color 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation-fill-mode: forwards;
+    }
+    .chapter-card:hover {
+      background-color: #e0e7ff;
+    }
+
+    .chapter-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2a3d66;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .lesson-subtitle {
+      font-size: 14px;
+      font-weight: normal;
+      color: #555;
+      text-align: center;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .line {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .pdf-link, .video-link {
+      padding: 8px 14px;
+      background-color: #edf2fb;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #2a3d66;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .desc-button, .pdf-button {
+      padding: 6px 12px;
+      background-color: #cbd5e1;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #1e293b;
+      user-select: none;
+    }
+
+    .suivi-button {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      min-width: 100px;
+    }
+
+    .suivi-true {
+      background-color: #38a169; /* vert */
+      color: white;
+    }
+
+    .suivi-false {
+      background-color: #e53e3e; /* rouge */
+      color: white;
+    }
+
+    .pdf-link:hover,
+    .video-link:hover,
+    .desc-button:hover,
+    .pdf-button:hover,
+    .suivi-button:hover {
+      opacity: 0.9;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: #e53e3e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Menu fixé en haut */
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 10000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu nav a {
+      margin-left: 15px;
+      color: #2a3d66;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #menu div.breadcrumbs a {
+      color: #2a3d66;
+      text-decoration: none;
+    }

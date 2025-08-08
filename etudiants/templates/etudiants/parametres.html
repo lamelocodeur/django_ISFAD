@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/parametres.css' %}">
+
+  <title>ISFAD | Parametres </title>
+
+</head>
+<body>
+  
+  <div class="container">
+    <h1>Paramètres du compte</h1>
+    <ul>
+      <li><a href="changer_couleur.html">Changer la couleur du fond de la page</a></li>
+      <li><a href="disposition_lecons.html">Modifier la disposition d'apparition des leçons</a></li>
+      <li><a href="{% url 'profil'%}">Modifier les informations du profil</a></li>
+      <li><a href="{% url 'profil'%}#lien">Changer le mot de passe</a></li>
+      <li><a href="{% url 'deconnection'%}">Se deconnecter</a></li>
+      <!-- Tu peux ajouter d'autres options ici -->
+    </ul>
+  </div>
+</body>
+</html>

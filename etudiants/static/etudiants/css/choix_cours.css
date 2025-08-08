@@ -1,0 +1,360 @@
+body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 2rem 1rem 6rem;
+      color: #222;
+    }
+    h1, h3, h4 {
+      color: #005fa3;
+      margin: 0 0 1rem 0;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-top: 90px; /* pour menu fixe */
+    }
+
+    /* MENU FIXE */
+    #menu {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-radius: 0 0 8px 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      z-index: 10000;
+      gap: 20px;
+    }
+    #menu .breadcrumbs {
+      flex: 1;
+      color: #2a3d66;
+    }
+    #menu .breadcrumbs a {
+      color: #2a3d66;
+      text-decoration: none;
+      font-weight: 600;
+      margin-right: 5px;
+    }
+    #menu .center-links {
+      flex: 1;
+      text-align: center;
+    }
+    #menu .center-links a {
+      margin: 0 12px;
+      font-weight: 600;
+      color: #2196f3;
+      text-decoration: none;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    #menu .right-filters {
+      flex: 1;
+      text-align: right;
+    }
+    #menu button#filter-toggle-btn {
+      background: #28a745;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    #menu button#filter-toggle-btn:hover {
+      background: #1e7e34;
+    }
+
+    /* CONTAINER PRINCIPAL */
+    #main-content {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding: 0 1rem;
+    }
+
+    /* SECTION COURS RECENTS + FILTRE MATIERE */
+    #cours-recents-filter {
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 15px;
+    }
+    #cours-recents-filter > div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #cours-recents-filter label {
+      font-weight: 600;
+      color: #005fa3;
+      cursor: pointer;
+    }
+    #cours-recents-filter select,
+    #cours-recents-filter input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    /* CONTENEUR CARTES COURS */
+    .cours-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(380px,1fr));
+      gap: 2rem;
+    }
+
+    /* CARTE COURS */
+    .cours-card {
+      background: linear-gradient(145deg, #ffffff, #d8e2f0);
+      border-radius: 24px;
+      padding: 2rem 2rem 2rem 2rem;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      transition: transform 0.3s ease;
+    }
+    .cours-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+    }
+    .cours-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #003366;
+    }
+
+    /* Progression avec pourcentage */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 10px;
+    }
+    .progress-percent {
+      min-width: 45px;
+      font-weight: 700;
+      color: #2e7d32;
+      font-size: 1.1rem;
+      text-align: right;
+    }
+    .progress-bar-background {
+      flex-grow: 1;
+      height: 16px;
+      background: #d4d4d4;
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #81c784);
+      width: 0%;
+      transition: width 0.4s ease;
+      border-radius: 12px 0 0 12px;
+    }
+
+    /* Buttons en ligne */
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: auto; /* pousse en bas de la carte */
+    }
+    .btn-info {
+      background-color: #007bff;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.3s ease;
+      min-width: 130px;
+    }
+    .btn-info:hover {
+      background-color: #0056b3;
+    }
+    .btn-voir {
+      background-color: #28a745;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      flex-grow: 1;
+      transition: background 0.3s ease;
+    }
+    .btn-voir:hover {
+      background-color: #1e7e34;
+    }
+
+    /* OVERLAY + POPUP */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 999;
+      display: none;
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      max-width: 650px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+      outline: none;
+    }
+    .popup h3 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+    }
+    .popup section {
+      margin-bottom: 1.5rem;
+    }
+    .popup label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #004080;
+      margin-bottom: 0.7rem;
+    }
+    .popup ul {
+      padding-left: 20px;
+      margin-top: 0;
+      margin-bottom: 0;
+      list-style: disc;
+      color: #222;
+      font-weight: 500;
+    }
+    .popup ul li {
+      margin-bottom: 0.5rem;
+    }
+    .popup button.close-popup {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.3s ease;
+    }
+    .popup button.close-popup:hover {
+      background: #a71d2a;
+    }
+
+    /* SECTION CALENDRIER + EVENEMENTS */
+    #calendar {
+      max-width: 1200px;
+      margin: 3rem auto 6rem;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+    }
+    #calendar > div {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    #calendar h3 {
+      margin-top: 0;
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
+      color: #004080;
+      border-bottom: 2px solid #81c784;
+      padding-bottom: 0.3rem;
+    }
+    #calendar .calendar-body {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      user-select: none;
+    }
+    #calendar .calendar-body div {
+      border-radius: 8px;
+      padding: 8px 5px;
+      text-align: center;
+      font-weight: 600;
+      color: #005fa3;
+      background: #e6f0ff;
+      cursor: default;
+    }
+    #calendar .calendar-body .today {
+      background: #4caf50;
+      color: white;
+    }
+
+    #eventsList {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #333;
+      font-weight: 600;
+    }
+    #eventsList li {
+      background: #dff0d8;
+      margin-bottom: 0.7rem;
+      padding: 10px 15px;
+      border-radius: 10px;
+      color: #3c763d;
+      font-weight: 700;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+    }
+    #eventsList li:hover {
+      background: #c8e5bc;
+    }
+
+    /* Responsive */
+    @media(max-width: 800px) {
+      #calendar {
+        flex-direction: column;
+        max-height: none;
+      }
+      #calendar > div {
+        max-height: none;
+      }
+      .cours-container {
+        grid-template-columns: 1fr;
+      }
+      #menu {
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+      #menu .breadcrumbs, #menu .center-links, #menu .right-filters {
+        flex: unset;
+        text-align: center;
+        width: 100%;
+      }
+    }
+    #az a {
+      color: black;font-weight: bold;text-decoration: none;
+    }

@@ -1,0 +1,183 @@
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      display: flex;
+      gap: 30px;
+      max-width: 1100px;
+      margin: auto;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Profil utilisateur */
+    .profile {
+      flex: 1;
+      border-right: 1px solid #eee;
+      padding-right: 30px;
+    }
+
+    .profile h1 {
+      color: #1976d2;
+      margin-bottom: 30px;
+    }
+
+    .profile-picture {
+      display: block;
+      margin: 0 auto 30px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(25, 118, 210, 0.5);
+    }
+
+    .profile-item {
+      margin-bottom: 18px;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #004080;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-size: 1.05em;
+      color: #333;
+    }
+
+    .btn-edit {
+      display: block;
+      margin: 30px auto 0;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+      width: max-content;
+    }
+
+    .btn-edit:hover {
+      background-color: #0d47a1;
+    }
+
+    /* Section évaluations */
+    .evaluations {
+      flex: 1;
+      padding-left: 30px;
+    }
+
+    .evaluations h2 {
+      color: #1976d2;
+      margin-bottom: 20px;
+    }
+
+    .eval-item {
+      background-color: #f7f9fc;
+      border-left: 5px solid #1976d2;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .eval-item strong {
+      color: #444;
+    }
+
+    .eval-item span {
+      display: block;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    /* Message succès avec animation */
+    #message-success {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translate(-50%, -20px);
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 9999;
+      font-size: 1.1em;
+
+      opacity: 0;
+      /* on supprime la transition pour passer à l'animation */
+      animation-fill-mode: forwards;
+    }
+
+    #message-success.show {
+      display: block;
+      animation: slideFadeIn 0.5s ease forwards;
+    }
+
+    #message-success.hide {
+      animation: slideFadeOut 0.5s ease forwards;
+    }
+
+    @keyframes slideFadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    @keyframes slideFadeOut {
+      from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+    }
+
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 10000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu nav a {
+      margin-left: 15px;
+      color: #2a3d66;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #menu div.breadcrumbs a {
+      color: #2a3d66;
+      text-decoration: none;
+    }

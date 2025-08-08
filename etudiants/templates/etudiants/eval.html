@@ -1,0 +1,493 @@
+
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'etudiants/css/evaluation.css' %}">
+
+  <title>ISFAD | Evaluation </title>
+
+</head>
+<body>
+
+<header>
+  <h2>Évaluations & Tests</h2>
+  <nav>
+    <ul>
+      <li><a href="{% url 'accueil'%}">Accueil</a></li>
+      <li><a href="{% url 'profil'%}">Profil</a></li>
+      <li><a href="{% url 'parametres'%}">⚙️ Paramètres</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <div class="container">
+    <div id="action-buttons">
+      <div class="button-group">
+        <button id="add-test-btn" class="action-btn">
+          <i class="fas fa-plus-circle" style="color:#4CAF50;"></i> Ajouter un test
+        </button>
+
+        <button id="add-devoir-btn" class="action-btn">
+          <i class="fas fa-book" style="color:#2196F3;"></i> Ajouter un devoir
+        </button>
+
+        <button id="show-devoirs-rendus-btn" class="action-btn rendu">
+          <i class="fas fa-folder-open" style="color:#FF9800;"></i> Afficher devoirs rendus
+        </button>
+
+        <button id="valider-notes-btn" class="action-btn" style="background:#ff5722; color:#fff; margin-left:10px;">
+          <i class="fas fa-check-circle"></i> Valider notes
+        </button>
+      </div>
+      <button id="toggle-filter-btn">Filtrer</button>
+    </div>
+
+    <div id="filter-panel" aria-hidden="true">
+      <label for="filter-status">Statut :</label>
+      <select id="filter-status">
+        <option value="all">Tous</option>
+        <option value="termine">Terminé</option>
+        <option value="non-termine">Pas commencé</option>
+      </select>
+
+      <label for="filter-matiere">Matière :</label>
+      <select id="filter-matiere">
+        <option value="all">Toutes</option>
+      </select>
+
+      <label for="filter-note">Note minimale (sur 10) :</label>
+      <input type="number" id="filter-note" min="0" max="10" step="0.1" value="0" />
+    </div>
+
+    <div id="test-container"></div>
+  </div>
+
+  <div class="modal-overlay" id="popup-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <div id="message-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <script>
+    // Données tests et devoirs
+    let tests = JSON.parse(localStorage.getItem("testsData")) || [
+      { id: 'eval1', titre: "Évaluation 1", matiere: "Introduction à l'informatique", maxEssais: 3, description: "Test sur les bases de l'informatique." },
+      { id: 'eval2', titre: "Évaluation 2", matiere: "Programmation Python", maxEssais: 2, description: "Test portant sur les concepts fondamentaux Python." },
+      { id: 'eval3', titre: "Évaluation 3", matiere: "Réseaux Informatiques", maxEssais: 3, description: "Évaluation des connaissances en réseaux." },
+      {
+        id: 'devoir_1',
+        titre: "📘 Devoir : Structure de données",
+        matiere: "Programmation Python",
+        maxEssais: 1,
+        description: "Rendez votre code source compressé au format zip.",
+        note: null,
+        bonus: false,
+        dateLimite: null
+      },
+    ];
+
+    // Données étudiants / notes
+    let notesEtudiants = JSON.parse(localStorage.getItem("notesEtudiants")) || [
+      { id: 1, nom: "Diarra", prenom: "Aminata", note: 7.5 },
+      { id: 2, nom: "Konaté", prenom: "Mamadou", note: 9 },
+      { id: 3, nom: "Camara", prenom: "Fatou", note: 8.2 },
+      { id: 4, nom: "Diallo", prenom: "Ibrahima", note: 6.8 },
+    ];
+
+    const filterStatusEl = document.getElementById('filter-status');
+    const filterMatiereEl = document.getElementById('filter-matiere');
+    const filterNoteEl = document.getElementById('filter-note');
+    const filterPanel = document.getElementById('filter-panel');
+    const toggleFilterBtn = document.getElementById('toggle-filter-btn');
+    const showDevoirsRendusBtn = document.getElementById('show-devoirs-rendus-btn');
+    const modalOverlay = document.getElementById("popup-modal");
+    const modalContent = document.getElementById("modal-content");
+    const messageContainer = document.getElementById("message-container");
+
+    function sauvegarderTests() {
+      localStorage.setItem("testsData", JSON.stringify(tests));
+    }
+
+    function sauvegarderNotes() {
+      localStorage.setItem("notesEtudiants", JSON.stringify(notesEtudiants));
+    }
+
+    function showMessage(message, isError = false) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message" + (isError ? " error" : "");
+      msgDiv.textContent = message;
+      messageContainer.appendChild(msgDiv);
+      setTimeout(() => { msgDiv.remove(); }, 4000);
+    }
+
+    function remplirFiltresMatiere() {
+      const matieres = [...new Set(tests.map(t => t.matiere))].sort();
+      filterMatiereEl.innerHTML = '<option value="all">Toutes</option>';
+      matieres.forEach(m => {
+        filterMatiereEl.innerHTML += `<option value="${m}">${m}</option>`;
+      });
+    }
+
+    function genererCartes() {
+      const container = document.getElementById("test-container");
+      container.innerHTML = "";
+
+      const statusFilter = filterStatusEl.value;
+      const matiereFilter = filterMatiereEl.value;
+      const noteMinFilter = parseFloat(filterNoteEl.value) || 0;
+      const nowDate = new Date();
+
+      tests.forEach(test => {
+        const essaisFaits = parseInt(localStorage.getItem(`${test.id}_essais`) || "0", 10);
+        const noteRaw = localStorage.getItem(`${test.id}_note`);
+        const note = noteRaw ? parseFloat(noteRaw) / 10 : test.note || null;
+        const date = localStorage.getItem(`${test.id}_date`);
+        const termineFlag = localStorage.getItem(test.id) === "termine";
+        const termine = termineFlag || (test.note !== null && test.note !== undefined);
+        const essaisRestants = Math.max(test.maxEssais - essaisFaits, 0);
+        const isDevoir = test.id.startsWith("devoir_");
+
+        if (statusFilter === 'termine' && !termine) return;
+        if (statusFilter === 'non-termine' && termine) return;
+        if (matiereFilter !== 'all' && test.matiere !== matiereFilter) return;
+        if (note !== null && note < noteMinFilter) return;
+
+        let dateLimiteDepassee = false;
+        if (isDevoir && test.dateLimite) {
+          const limiteDate = new Date(test.dateLimite + "T23:59:59");
+          if (nowDate > limiteDate) dateLimiteDepassee = true;
+        }
+
+        const disabled = (essaisRestants <= 0 && note !== null && note >= 10) || dateLimiteDepassee;
+        const btnClass = disabled ? "btn-link disabled" : "btn-link";
+
+        let statutHTML = isDevoir
+          ? (termine
+              ? `Terminé
+                ${note !== null ? `<small>Note : ${note.toFixed(2)}${test.bonus ? " (Bonus)" : ""} / 10</small>` : ""}
+                <small>Le : ${date || "-"}</small>
+                ${test.dateLimite ? `<small>Date limite : ${test.dateLimite}</small>` : ""}
+              `
+              : (dateLimiteDepassee
+                ? `<span style="color: red; font-weight:bold;">Date limite dépassée</span>`
+                : `Pas commencé`
+              ))
+          : (termine
+              ? `Terminé
+                <small>Note : ${note !== null ? note.toFixed(2) : "-"} / 10</small>
+                <small>Le : ${date || "-"}</small>
+                <small>Essais restants : ${essaisRestants} / ${test.maxEssais}</small>`
+              : `Pas commencé
+                <small>Essais restants : ${essaisRestants} / ${test.maxEssais}</small>`);
+
+        const boutonActionHTML = isDevoir
+          ? `<button onclick="ouvrirPopupRendreDevoir('${test.id}')" ${disabled ? "disabled" : ""}>Rendre le devoir</button>`
+          : `<a href="faire_test.html?id=${test.id}" class="${btnClass}" ${disabled ? "aria-disabled='true' tabindex='-1'" : ""}>Faire le test</a>`;
+
+        container.innerHTML += `
+          <div class="test-card">
+            <h3>${test.titre}</h3>
+            <p><strong>Matière :</strong> ${test.matiere}</p>
+            <div class="buttons">
+              ${boutonActionHTML}
+              <button onclick="afficherDescription('${test.id}')">Infos</button>
+            </div>
+            <div class="status ${termine ? "termine" : "non-termine"}">${statutHTML}</div>
+          </div>
+        `;
+      });
+    }
+
+    function ouvrirPopupRendreDevoir(devoirId) {
+      const devoir = tests.find(t => t.id === devoirId);
+      if (!devoir) return showMessage("Devoir non trouvé", true);
+
+      modalContent.innerHTML = `
+        <h3>Rendre le devoir</h3>
+        <p><strong>${devoir.titre}</strong></p>
+        <p>${devoir.description || "Pas de description"}</p>
+        <label for="file-upload">Choisir un fichier (max 5 Mo) :</label>
+        <input type="file" id="file-upload" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.7z,.png,.jpg,.jpeg,.gif" />
+        <div class="actions">
+          <button onclick="fermerPopup()">Annuler</button>
+          <button id="btn-valider-rendu">Valider</button>
+        </div>
+      `;
+
+      modalOverlay.style.display = "flex";
+
+      document.getElementById("btn-valider-rendu").onclick = () => {
+        const fileInput = document.getElementById("file-upload");
+        if (fileInput.files.length === 0) return showMessage("Veuillez sélectionner un fichier.", true);
+        const file = fileInput.files[0];
+        if (file.size > 5 * 1024 * 1024) return showMessage("Le fichier dépasse 5 Mo.", true);
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          let devoirsRendus = JSON.parse(localStorage.getItem("devoirsRendus") || "[]");
+          devoirsRendus = devoirsRendus.filter(d => d.id !== devoirId);
+          devoirsRendus.push({
+            id: devoirId,
+            titre: devoir.titre,
+            dateDepot: new Date().toLocaleString(),
+            fichierName: file.name,
+            fichierData: e.target.result
+          });
+          localStorage.setItem("devoirsRendus", JSON.stringify(devoirsRendus));
+          localStorage.setItem(devoirId, "termine");  // Marque devoir comme terminé
+          showMessage("Devoir rendu avec succès !");
+          fermerPopup();
+          genererCartes();
+        };
+        reader.readAsDataURL(file);
+      };
+    }
+
+    showDevoirsRendusBtn.addEventListener("click", () => {
+      const devoirsRendus = JSON.parse(localStorage.getItem("devoirsRendus") || "[]");
+      modalContent.innerHTML = `
+        <h3>Devoirs rendus</h3>
+        ${devoirsRendus.length === 0
+          ? "<p>Aucun devoir rendu pour l'instant.</p>"
+          : `<ul style="padding-left:20px;">${devoirsRendus.map(d =>
+            `<li>
+              <strong>${d.titre}</strong><br/>
+              Déposé le : ${d.dateDepot}<br/>
+              Fichier : <a href="${d.fichierData}" download="${d.fichierName}" target="_blank">${d.fichierName}</a>
+            </li><br/>`).join("")}</ul>`
+        }
+        <div class="actions"><button onclick="fermerPopup()">Fermer</button></div>
+      `;
+      modalOverlay.style.display = "flex";
+    });
+
+    function openModal(type) {
+      const isTest = type === "test";
+      modalContent.innerHTML = `
+        <h3>Ajouter un ${isTest ? "test" : "devoir"}</h3>
+        <label>ID (unique)</label>
+        <input type="text" id="input-id" placeholder="ex: test_4" />
+        <label>Titre</label>
+        <input type="text" id="input-titre" placeholder="Titre du test/devoir" />
+        <label>Matière</label>
+        <input type="text" id="input-matiere" placeholder="Matière" />
+        ${isTest ? `
+          <label>Nombre maximal d'essais</label>
+          <input type="number" id="input-essais" min="1" value="3" />
+        ` : `
+          <label>Date de dépôt</label>
+          <input type="date" id="input-depot" />
+          <label>Date limite</label>
+          <input type="date" id="input-limite" />
+          <label>Note (0-10)</label>
+          <input type="number" id="input-note" min="0" max="10" step="0.1" />
+          <label><input type="checkbox" id="input-bonus" /> Bonus ?</label>
+        `}
+        <label>Description</label>
+        <textarea id="input-description" placeholder="Description (optionnelle)"></textarea>
+        <div class="actions">
+          <button onclick="fermerPopup()">Annuler</button>
+          <button onclick="validerAjout('${type}')">Ajouter</button>
+        </div>
+      `;
+      modalOverlay.style.display = "flex";
+    }
+
+    function fermerPopup() {
+      modalOverlay.style.display = "none";
+    }
+
+    function validerAjout(type) {
+      const id = document.getElementById("input-id").value.trim();
+      const titre = document.getElementById("input-titre").value.trim();
+      const matiere = document.getElementById("input-matiere").value.trim();
+      const description = document.getElementById("input-description").value.trim();
+
+      if (!id || !titre || !matiere) {
+        return showMessage("Champs obligatoires manquants.", true);
+      }
+
+      if (tests.some(t => t.id === id)) {
+        return showMessage("Cet ID existe déjà.", true);
+      }
+
+      if (type === "test") {
+        let maxEssais = parseInt(document.getElementById("input-essais").value) || 3;
+        tests.push({ id, titre, matiere, maxEssais, description, note: null, bonus: false });
+      } else {
+        const depot = document.getElementById("input-depot").value;
+        const limite = document.getElementById("input-limite").value;
+        const noteInput = document.getElementById("input-note").value;
+        const note = parseFloat(noteInput);
+        const bonus = document.getElementById("input-bonus").checked;
+
+        if (!depot || !limite) {
+          return showMessage("Dates obligatoires pour un devoir.", true);
+        }
+
+        if (isNaN(note) && noteInput !== "") {
+          return showMessage("Note invalide.", true);
+        }
+
+        const limiteDate = new Date(limite + "T23:59:59");
+        const nowDate = new Date();
+        if (nowDate > limiteDate) {
+          return showMessage("Impossible d'ajouter un devoir dont la date limite est dépassée.", true);
+        }
+
+        tests.push({
+          id,
+          titre: "📘 Devoir : " + titre,
+          matiere,
+          maxEssais: 1,
+          description,
+          dateDepot: depot,
+          dateLimite: limite,
+          note: isNaN(note) ? null : note,
+          bonus
+        });
+      }
+
+      sauvegarderTests();
+      fermerPopup();
+      remplirFiltresMatiere();
+      genererCartes();
+      showMessage("Ajout réussi !");
+    }
+
+    function afficherDescription(testId) {
+      const test = tests.find(t => t.id === testId);
+      if (!test) {
+        showMessage("Test/Devoir introuvable", true);
+        return;
+      }
+
+      modalContent.innerHTML = `
+        <h3>Description : ${test.titre}</h3>
+        <p>${test.description || "Aucune description fournie."}</p>
+        <div class="actions">
+          <button onclick="fermerPopup()">Fermer</button>
+        </div>
+      `;
+      modalOverlay.style.display = "flex";
+    }
+
+    toggleFilterBtn.addEventListener('click', () => {
+      const isVisible = filterPanel.style.display === 'block';
+      filterPanel.style.display = isVisible ? 'none' : 'block';
+      filterPanel.setAttribute('aria-hidden', isVisible ? 'true' : 'false');
+    });
+
+    document.getElementById("add-test-btn").addEventListener("click", () => openModal("test"));
+    document.getElementById("add-devoir-btn").addEventListener("click", () => openModal("devoir"));
+
+    filterStatusEl.addEventListener('change', genererCartes);
+    filterMatiereEl.addEventListener('change', genererCartes);
+    filterNoteEl.addEventListener('input', genererCartes);
+
+    // --- Nouvelle fonctionnalité : Valider Notes ---
+    document.getElementById("valider-notes-btn").addEventListener("click", ouvrirPopupValiderNotes);
+
+    function ouvrirPopupValiderNotes() {
+      let html = `
+        <h3>Valider notes des étudiants</h3>
+        <table border="1" style="width:100%; border-collapse: collapse; text-align:center;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Note (0-10)</th>
+              <th>Modifier</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      notesEtudiants.forEach((etu, index) => {
+        html += `
+          <tr data-index="${index}">
+            <td>${etu.id}</td>
+            <td>${etu.nom}</td>
+            <td>${etu.prenom}</td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="${etu.note.toFixed(1)}" disabled style="width:60px;" />
+            </td>
+            <td>
+              <button class="btn-modifier">Modifier</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+        <div style="text-align:right; margin-top:10px;">
+          <button id="btn-valider-global">Valider</button>
+          <button onclick="fermerPopup()">Fermer</button>
+        </div>
+      `;
+
+      modalContent.innerHTML = html;
+      modalOverlay.style.display = "flex";
+
+      // Gérer clics Modifier pour activer input
+      modalContent.querySelectorAll(".btn-modifier").forEach((btn, i) => {
+        const tr = btn.closest("tr");
+        const inputNote = tr.querySelector("input[type=number]");
+
+        btn.onclick = () => {
+          inputNote.disabled = false;
+          inputNote.focus();
+          btn.disabled = true;
+        };
+      });
+
+      // Valider toutes les modifications en une fois
+      document.getElementById("btn-valider-global").onclick = () => {
+        let erreur = false;
+        const inputs = modalContent.querySelectorAll("tbody input[type=number]");
+        inputs.forEach((input, i) => {
+          const val = parseFloat(input.value);
+          if (isNaN(val) || val < 0 || val > 10) {
+            erreur = true;
+            input.style.borderColor = "red";
+          } else {
+            input.style.borderColor = "";
+          }
+        });
+        if (erreur) {
+          alert("Certaines notes sont invalides (doivent être entre 0 et 10).");
+          return;
+        }
+
+        inputs.forEach((input, i) => {
+          notesEtudiants[i].note = parseFloat(input.value);
+          input.disabled = true;
+          modalContent.querySelectorAll(".btn-modifier")[i].disabled = false;
+        });
+
+        sauvegarderNotes();
+        showMessage("Toutes les notes ont été mises à jour.");
+        fermerPopup();
+      };
+    }
+
+    function fermerPopup() {
+      modalOverlay.style.display = "none";
+    }
+
+    // Initialisation
+    remplirFiltresMatiere();
+    genererCartes();
+  </script>
+</html>
