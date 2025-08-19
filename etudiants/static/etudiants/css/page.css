@@ -210,41 +210,31 @@
       cursor: pointer;
       transform: scale(1.05);
     }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 0;
-      padding: 1rem 2rem;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      user-select: none;
-    }
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .top-bar-left img {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 2px rgba(0,0,0,0.25));
-      user-select: none;
-    }
-    .top-bar-left span {
-      font-weight: 700;
-      font-size: 1.2rem;
-      user-select: none;
-      color: white;
-      white-space: nowrap;
-    }
-    .top-bar-right {
-      display: flex;
-      gap: 1rem;
-    }
+ .navbar-custom {
+            background: linear-gradient(90deg, #007bff, #0056d2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .navbar-custom .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+            font-size: 1.3rem;
+        }
+        .navbar-custom .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+        /* Texte statut centré */
+        .navbar-status {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .navbar-brand i {
+            font-size: 1.6rem; /* Icône plus grande */
+        }
     button.header-btn {
       padding: 0.5rem 1.2rem;
       border: none;

@@ -1,0 +1,925 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personnalisation</title>
+  <link rel="stylesheet" href="{% static 'administrateurs/css/personnalisation.css' %}">
+</head>
+<body>
+
+<div class="sidebar" role="navigation" aria-label="Menu principal">
+  <h2>ISFAD</h2>
+
+  <ul>
+    <li><a href="{% url 'dashboard' %}">Tableau de bord</a></li>
+    <li><a href="{% url 'utilisateurs' %}" >Utilisateurs</a></li>
+    <li><a href="{% url 'personnalisation' %}" class="active">Personnalisation</a></li>
+    <li><a href="{% url 'admin' %}">Chat en live</a></li>
+  </ul>
+
+  <div class="sidebar-center">
+    <div class="big-icon"></div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <a href="#">Lien 1</a>
+    <a href="#" class="icon-link">Lien 2 <span class="icon"></span></a>
+  </div>
+</div>
+
+<button id="openMessageBtn">Envoyer message</button>
+
+<!-- POPUP MODAL -->
+<div id="messageModal" class="modal">
+  <div class="modal-content">
+    <h3>Envoyer un message</h3>
+
+    <div class="checkboxes">
+      <label><input type="checkbox" id="etudiants"> Tous les étudiants</label><br>
+      <label><input type="checkbox" id="profs"> Tous les professeurs</label><br>
+      <label><input type="checkbox" id="tous"> Tous le monde</label>
+    </div>
+
+    <textarea id="messageInput" placeholder="Écris ton message ici..."></textarea>
+
+    <div class="buttons">
+      <button id="sendBtn">Envoyer</button>
+      <button id="cancelBtn">Annuler</button>
+    </div>
+  </div>
+</div>
+
+
+  <main class="main-content" role="main" aria-label="Personnalisation des matières">
+    <header style="display:flex; justify-content:space-between; align-items:center;">
+      <h1>Personnalisation</h1>
+      <div class="user-info" aria-live="polite">Connecté : Maina</div>
+    </header>
+
+    <!-- Messages dynamique -->
+    <div id="message-container" role="alert" aria-live="assertive" style="min-height:24px; margin:10px 0;"></div>
+
+    <!-- Boutons Ajouter/Modifier/Supprimer/Lister -->
+    <a href="#" class="btn-option" id="btn-ajouter">Ajouter nouvelle matière</a>
+    <a href="#" class="btn-option" id="btn-modifier">Modifier matière</a>
+    <a href="#" class="btn-option" id="btn-supprimer">Supprimer matière</a>
+    <a href="#" class="btn-option" id="btn-lister">Afficher la liste des matières</a>
+
+    <!-- Filtres -->
+    <div id="filter-buttons" role="group" aria-label="Menu de filtres" style="margin-top:20px;">
+      <button class="filter-btn" data-filter="matiere" aria-pressed="false" type="button">Matières</button>
+      <button class="filter-btn" data-filter="departement" aria-pressed="false" type="button">Départements</button>
+      <button class="filter-btn" data-filter="professeur" aria-pressed="false" type="button">Professeurs</button>
+      <button class="filter-btn" data-filter="etudiant" aria-pressed="false" type="button">Étudiants</button>
+    </div>
+
+    <div id="filter-options-container" aria-live="polite" aria-atomic="true" style="margin-top:10px;"></div>
+    <div id="filtre-selection" style="margin-top:8px;">Aucun filtre sélectionné.</div>
+
+    <!-- Section sélection département/licence/groupe -->
+    <section class="select-section" aria-label="Sélection département, licence, groupe" style="margin:20px 0;">
+      <label for="select-departement">Département :</label>
+      <select id="select-departement" autocomplete="off" required>
+        <option value="">-- Sélectionner --</option>
+        <option value="Science">Science</option>
+        <option value="Lettres">Lettres</option>
+        <option value="Informatique">Informatique</option>
+        <option value="Économie">Économie</option>
+        <option value="Droit">Droit</option>
+        <option value="Gestion">Gestion</option>
+        <option value="Art">Art</option>
+      </select>
+
+      <label for="select-licence">Licence :</label>
+      <select id="select-licence" autocomplete="off" required>
+        <option value="">-- Sélectionner --</option>
+        <option value="Licence1">Licence 1</option>
+        <option value="Licence2">Licence 2</option>
+        <option value="Licence3">Licence 3</option>
+      </select>
+
+      <label for="select-groupe">Groupe :</label>
+      <select id="select-groupe" autocomplete="off" required>
+        <option value="">-- Sélectionner --</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+      </select>
+
+      <button id="btn-valider-selection" aria-label="Valider la sélection">Valider</button>
+      <button id="btn-afficher-emplois" aria-label="Afficher tous les emplois du temps">Afficher tous les emplois</button>
+    </section>
+
+    <!-- Section Emploi du temps -->
+    <section id="emploi" aria-label="Emploi du temps">
+      <h2>Emploi du Temps</h2>
+      <div class="jour" data-jour="Lundi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps lundi">
+        <h3>Lundi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+      <div class="jour" data-jour="Mardi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps mardi">
+        <h3>Mardi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+      <div class="jour" data-jour="Mercredi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps mercredi">
+        <h3>Mercredi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+      <div class="jour" data-jour="Jeudi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps jeudi">
+        <h3>Jeudi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+      <div class="jour" data-jour="Vendredi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps vendredi">
+        <h3>Vendredi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+      <div class="jour" data-jour="Samedi" tabindex="0" role="button" aria-pressed="false" aria-label="Modifier emploi du temps samedi">
+        <h3>Samedi</h3>
+        <div class="details" aria-live="polite" aria-atomic="true">Aucune donnée.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Popups -->
+
+  <!-- Popup modifier emploi -->
+  <div id="popup-emploi-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-emploi-title" tabindex="-1" style="display:none;">
+    <div id="popup-emploi" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; margin:auto; box-shadow:0 0 10px rgba(0,0,0,0.3);">
+      <h2 id="popup-emploi-title">Modifier Emploi du temps - <span id="popup-emploi-jour"></span></h2>
+      <form id="popup-emploi-form" autocomplete="off">
+        <label for="emploi-matiere">Matière <sup aria-label="Obligatoire">*</sup> :</label>
+        <input type="text" id="emploi-matiere" name="emploi-matiere" required autocomplete="off" />
+
+        <label for="emploi-professeur">Professeur :</label>
+        <input type="text" id="emploi-professeur" name="emploi-professeur" autocomplete="off" />
+
+        <label for="emploi-groupe">Groupe <sup aria-label="Obligatoire">*</sup> :</label>
+        <select id="emploi-groupe" name="emploi-groupe" required>
+          <option value="">-- Sélectionner --</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+        </select>
+
+        <label for="emploi-debut">Début <sup aria-label="Obligatoire">*</sup> :</label>
+        <input type="time" id="emploi-debut" name="emploi-debut" required />
+
+        <label for="emploi-fin">Fin <sup aria-label="Obligatoire">*</sup> :</label>
+        <input type="time" id="emploi-fin" name="emploi-fin" required />
+
+        <div style="margin-top:20px; text-align:right;">
+          <button type="button" id="emploi-save-btn">Valider</button>
+          <button type="button" id="emploi-cancel-btn">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup liste complète filtre -->
+  <div id="popup-liste-filtre-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-liste-filtre-title" tabindex="-1" style="display:none;">
+    <div id="popup-liste-filtre" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; margin:auto; box-shadow:0 0 10px rgba(0,0,0,0.3); max-height:70vh; overflow-y:auto;">
+      <h2 id="popup-liste-filtre-title">Liste complète</h2>
+      <ul id="popup-liste-ul" style="list-style:none; padding-left:0;"></ul>
+      <button class="close-btn" id="popup-liste-close-btn" style="margin-top:10px;">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Popup tous les emplois -->
+  <div id="popup-emploi-tous-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-emploi-tous-title" tabindex="-1" style="display:none;">
+    <div id="popup-emploi-tous" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; margin:auto; box-shadow:0 0 10px rgba(0,0,0,0.3); max-height:70vh; overflow-y:auto;">
+      <h2 id="popup-emploi-tous-title">Tous les emplois du temps sauvegardés</h2>
+      <ul id="emploi-tous-list" style="list-style:none; padding-left:0;"></ul>
+      <button class="close-btn" id="popup-emploi-tous-close-btn" style="margin-top:10px;">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Popup ajout entrée -->
+  <div id="popup-ajout-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-ajout-title" tabindex="-1" style="display:none;">
+    <div id="popup-ajout" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; margin:auto; box-shadow:0 0 10px rgba(0,0,0,0.3);">
+      <h2 id="popup-ajout-title">Ajouter une nouvelle entrée</h2>
+      <form id="form-ajout" autocomplete="off">
+        <div id="form-fields-container"></div>
+        <div style="margin-top:20px; text-align:right;">
+          <button type="submit" id="btn-ajout-valider">Valider</button>
+          <button type="button" id="btn-ajout-annuler">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- Variables globales ---
+    let activeFilter = null;
+    let selectedOption = null;
+
+    // Données simulées pour chaque filtre (modifiables dynamiquement)
+    const dataFiltres = {
+      matiere: ["Mathématiques", "Physique", "Chimie", "Histoire"],
+      departement: ["Science", "Lettres", "Informatique", "Économie", "Droit", "Gestion", "Art"],
+      professeur: ["Mme Diallo", "M. Camara", "Mme Bah", "M. Conde"],
+      etudiant: ["Amara", "Fatou", "Mamadou", "Aminata"]
+    };
+
+    // Sélecteurs utiles
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const filterOptionsContainer = document.getElementById("filter-options-container");
+    const filtreSelection = document.getElementById("filtre-selection");
+    const messageContainer = document.getElementById("message-container");
+
+    // Boutons Ajouter/Modifier/Supprimer/Lister
+    const btnAjouter = document.getElementById("btn-ajouter");
+    const btnModifier = document.getElementById("btn-modifier");
+    const btnSupprimer = document.getElementById("btn-supprimer");
+    const btnLister = document.getElementById("btn-lister");
+
+    // Section emploi
+    const jours = document.querySelectorAll("#emploi .jour");
+
+    // Popup emploi
+    const popupEmploiOverlay = document.getElementById("popup-emploi-overlay");
+    const popupEmploi = document.getElementById("popup-emploi");
+    const popupEmploiJour = document.getElementById("popup-emploi-jour");
+    const emploiMatiereInput = document.getElementById("emploi-matiere");
+    const emploiProfInput = document.getElementById("emploi-professeur");
+    const emploiGroupePopup = document.getElementById("emploi-groupe");
+    const emploiDebutInput = document.getElementById("emploi-debut");
+    const emploiFinInput = document.getElementById("emploi-fin");
+    const emploiSaveBtn = document.getElementById("emploi-save-btn");
+    const emploiCancelBtn = document.getElementById("emploi-cancel-btn");
+
+    // Popup liste filtre
+    const popupListeOverlay = document.getElementById("popup-liste-filtre-overlay");
+    const popupListeUl = document.getElementById("popup-liste-ul");
+    const popupListeCloseBtn = document.getElementById("popup-liste-close-btn");
+
+    // Popup tous emplois
+    const popupEmploiTousOverlay = document.getElementById("popup-emploi-tous-overlay");
+    const popupEmploiTousList = document.getElementById("emploi-tous-list");
+    const popupEmploiTousCloseBtn = document.getElementById("popup-emploi-tous-close-btn");
+
+    // Popup ajout entrée
+    const popupAjoutOverlay = document.getElementById("popup-ajout-overlay");
+    const formAjout = document.getElementById("form-ajout");
+    const formFieldsContainer = document.getElementById("form-fields-container");
+    const btnAjoutAnnuler = document.getElementById("btn-ajout-annuler");
+
+    // Sélection département/licence/groupe
+    const selectDepartement = document.getElementById("select-departement");
+    const selectLicence = document.getElementById("select-licence");
+    const selectGroupe = document.getElementById("select-groupe");
+    const btnValiderSelection = document.getElementById("btn-valider-selection");
+    const btnAfficherEmplois = document.getElementById("btn-afficher-emplois");
+
+    // Variables internes emploi du temps
+    let currentJourEditing = null;
+
+    // Afficher message (type: success/error)
+    function showMessage(message, type = "success") {
+      messageContainer.textContent = message;
+      messageContainer.style.color = (type === "success") ? "green" : "red";
+      messageContainer.style.opacity = "1";
+      setTimeout(() => {
+        messageContainer.style.opacity = "0";
+      }, 3500);
+    }
+
+    // --- Fonctions filtre ---
+
+    function updateFilterButtonsUI() {
+      filterButtons.forEach(btn => {
+        const isActive = btn.dataset.filter === activeFilter;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    }
+
+    function renderOptionsForFilter(filter) {
+      if (!filter || !dataFiltres[filter]) {
+        filterOptionsContainer.style.display = "none";
+        filtreSelection.textContent = "Aucun filtre sélectionné.";
+        selectedOption = null;
+        return;
+      }
+      filterOptionsContainer.style.display = "block";
+
+      // Nettoyer
+      filterOptionsContainer.innerHTML = "";
+
+      // Header avec nombre et bouton affichage complet
+      const header = document.createElement("div");
+      header.classList.add("filter-header");
+      header.innerHTML = `
+        <span>${filter.charAt(0).toUpperCase() + filter.slice(1)}s</span>
+        <span class="count" aria-label="Nombre d'options">${dataFiltres[filter].length}</span>
+        <button class="show-list-btn" aria-label="Afficher liste complète">📋</button>
+      `;
+      filterOptionsContainer.appendChild(header);
+
+      // Container options
+      const optionsContainer = document.createElement("div");
+      optionsContainer.id = "filter-options-list";
+
+      dataFiltres[filter].forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "filter-option-btn";
+        btn.type = "button";
+        btn.addEventListener("click", () => {
+          selectedOption = opt;
+          updateSelectedOptionUI();
+        });
+        optionsContainer.appendChild(btn);
+      });
+
+      filterOptionsContainer.appendChild(optionsContainer);
+
+      // Bouton affichage complet
+      header.querySelector(".show-list-btn").addEventListener("click", () => {
+        openPopupListeComplete(filter);
+      });
+
+      updateSelectedOptionUI();
+    }
+
+    function updateSelectedOptionUI() {
+      const buttons = filterOptionsContainer.querySelectorAll(".filter-option-btn");
+      buttons.forEach(btn => {
+        btn.classList.toggle("selected", btn.textContent === selectedOption);
+      });
+      if (activeFilter && selectedOption) {
+        filtreSelection.textContent = `Filtre actif : ${activeFilter} — Sélection : ${selectedOption}`;
+      } else {
+        filtreSelection.textContent = "Aucun filtre sélectionné.";
+      }
+    }
+
+    // --- Popup liste complète ---
+    function openPopupListeComplete(filter) {
+      popupListeUl.innerHTML = "";
+      if (!filter || !dataFiltres[filter]) return;
+
+      dataFiltres[filter].forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        popupListeUl.appendChild(li);
+      });
+      popupListeOverlay.style.display = "flex";
+      popupListeOverlay.focus();
+    }
+
+    popupListeCloseBtn.addEventListener("click", () => {
+      popupListeOverlay.style.display = "none";
+    });
+
+    // --- Popup ajout entrée ---
+
+    let filtreActifPourAjout = null;
+
+    function generateUniqueId() {
+      return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    }
+
+    function openPopupAjout(filtre) {
+      filtreActifPourAjout = filtre;
+      formFieldsContainer.innerHTML = "";
+
+      if (filtre === "matiere") {
+        formFieldsContainer.innerHTML = `
+          <label for="ajout-nom">Nom de la matière <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-nom" name="nom" required autocomplete="off" />
+        `;
+      } else if (filtre === "departement") {
+        formFieldsContainer.innerHTML = `
+          <label for="ajout-nom">Nom du département <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-nom" name="nom" required autocomplete="off" />
+        `;
+      } else if (filtre === "professeur" || filtre === "etudiant") {
+        formFieldsContainer.innerHTML = `
+          <label for="ajout-nom">Nom <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-nom" name="nom" required autocomplete="off" />
+          <label for="ajout-prenom">Prénom <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-prenom" name="prenom" required autocomplete="off" />
+          <label for="ajout-departement">Département <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-departement" name="departement" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="Science">Science</option>
+            <option value="Lettres">Lettres</option>
+            <option value="Informatique">Informatique</option>
+            <option value="Économie">Économie</option>
+            <option value="Droit">Droit</option>
+            <option value="Gestion">Gestion</option>
+            <option value="Art">Art</option>
+          </select>
+          <label for="ajout-licence">Licence <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-licence" name="licence" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="Licence1">Licence 1</option>
+            <option value="Licence2">Licence 2</option>
+            <option value="Licence3">Licence 3</option>
+          </select>
+          <label for="ajout-groupe">Groupe <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-groupe" name="groupe" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+        `;
+      } else {
+        formFieldsContainer.innerHTML = `<p>Ajout non pris en charge pour ce filtre.</p>`;
+      }
+
+      popupAjoutOverlay.style.display = "flex";
+      popupAjoutOverlay.focus();
+    }
+
+    btnAjoutAnnuler.addEventListener("click", e => {
+      e.preventDefault();
+      closePopupAjout();
+    });
+
+    function closePopupAjout() {
+      popupAjoutOverlay.style.display = "none";
+      formAjout.reset();
+      filtreActifPourAjout = null;
+    }
+
+    formAjout.addEventListener("submit", e => {
+      e.preventDefault();
+
+      if (!filtreActifPourAjout) {
+        showMessage("Filtre non défini.", "error");
+        closePopupAjout();
+        return;
+      }
+
+      const formData = new FormData(formAjout);
+
+      if (filtreActifPourAjout === "matiere" || filtreActifPourAjout === "departement") {
+        const nom = formData.get("nom").trim();
+        if (!nom) {
+          showMessage("Le nom est obligatoire.", "error");
+          return;
+        }
+        if (dataFiltres[filtreActifPourAjout].includes(nom)) {
+          showMessage(`${filtreActifPourAjout.charAt(0).toUpperCase() + filtreActifPourAjout.slice(1)} existe déjà.`, "error");
+          return;
+        }
+        dataFiltres[filtreActifPourAjout].push(nom);
+        showMessage(`${filtreActifPourAjout.charAt(0).toUpperCase() + filtreActifPourAjout.slice(1)} ajouté avec succès.`);
+      } else if (filtreActifPourAjout === "professeur" || filtreActifPourAjout === "etudiant") {
+        const nom = formData.get("nom").trim();
+        const prenom = formData.get("prenom").trim();
+        const departement = formData.get("departement");
+        const licence = formData.get("licence");
+        const groupe = formData.get("groupe");
+
+        if (!nom || !prenom || !departement || !licence || !groupe) {
+          showMessage("Tous les champs sont obligatoires.", "error");
+          return;
+        }
+
+        const idUnique = generateUniqueId();
+
+        // On stocke sous forme d'objet JSON stringifié pour garder les infos propres
+        const nouvelleEntreeObj = {
+          id: idUnique,
+          nom,
+          prenom,
+          departement,
+          licence,
+          groupe
+        };
+
+        // On stringify l'objet pour comparaison simple
+        const nouvelleEntreeStr = JSON.stringify(nouvelleEntreeObj);
+
+        // Vérifier doublon en comparant string
+        if (dataFiltres[filtreActifPourAjout].some(e => JSON.stringify(e) === nouvelleEntreeStr)) {
+          showMessage("Cet utilisateur existe déjà.", "error");
+          return;
+        }
+
+        dataFiltres[filtreActifPourAjout].push(nouvelleEntreeObj);
+        showMessage(`${filtreActifPourAjout.charAt(0).toUpperCase() + filtreActifPourAjout.slice(1)} ajouté avec succès.`);
+      } else {
+        showMessage("Ajout non pris en charge pour ce filtre.", "error");
+      }
+
+      renderOptionsForFilter(filtreActifPourAjout);
+      closePopupAjout();
+    });
+
+    // --- Bouton Ajouter ouvre popup ajout ---
+    btnAjouter.addEventListener("click", e => {
+      e.preventDefault();
+      if (!activeFilter) {
+        showMessage("Sélectionnez un filtre avant d'ajouter.", "error");
+        return;
+      }
+      openPopupAjout(activeFilter);
+    });
+
+    // --- Bouton Modifier ---
+    btnModifier.addEventListener("click", e => {
+      e.preventDefault();
+      if (!activeFilter) {
+        showMessage("Sélectionnez un filtre avant de modifier.", "error");
+        return;
+      }
+      if (!selectedOption) {
+        showMessage("Sélectionnez une option à modifier.", "error");
+        return;
+      }
+      openPopupAjoutForModification(activeFilter, selectedOption);
+    });
+
+    // Fonction pour modification : réutilise popup ajout en mode modification
+    function openPopupAjoutForModification(filtre, valeur) {
+      filtreActifPourAjout = filtre;
+      formFieldsContainer.innerHTML = "";
+      popupAjoutOverlay.style.display = "flex";
+
+      if (filtre === "matiere" || filtre === "departement") {
+        formFieldsContainer.innerHTML = `
+          <label for="ajout-nom">Nom <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-nom" name="nom" required autocomplete="off" value="${valeur}" />
+        `;
+      } else if (filtre === "professeur" || filtre === "etudiant") {
+        // Recherche l'objet à modifier
+        const entree = dataFiltres[filtre].find(e => {
+          if (typeof e === "string") return e === valeur;
+          // Objet JSON
+          return (e.nom + " " + e.prenom) === valeur || JSON.stringify(e) === valeur;
+        });
+        if (!entree) {
+          showMessage("Entrée non trouvée pour modification.", "error");
+          closePopupAjout();
+          return;
+        }
+        formFieldsContainer.innerHTML = `
+          <label for="ajout-nom">Nom <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-nom" name="nom" required autocomplete="off" value="${entree.nom}" />
+          <label for="ajout-prenom">Prénom <sup aria-label="Obligatoire">*</sup></label>
+          <input type="text" id="ajout-prenom" name="prenom" required autocomplete="off" value="${entree.prenom}" />
+          <label for="ajout-departement">Département <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-departement" name="departement" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="Science" ${entree.departement==="Science"?"selected":""}>Science</option>
+            <option value="Lettres" ${entree.departement==="Lettres"?"selected":""}>Lettres</option>
+            <option value="Informatique" ${entree.departement==="Informatique"?"selected":""}>Informatique</option>
+            <option value="Économie" ${entree.departement==="Économie"?"selected":""}>Économie</option>
+            <option value="Droit" ${entree.departement==="Droit"?"selected":""}>Droit</option>
+            <option value="Gestion" ${entree.departement==="Gestion"?"selected":""}>Gestion</option>
+            <option value="Art" ${entree.departement==="Art"?"selected":""}>Art</option>
+          </select>
+          <label for="ajout-licence">Licence <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-licence" name="licence" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="Licence1" ${entree.licence==="Licence1"?"selected":""}>Licence 1</option>
+            <option value="Licence2" ${entree.licence==="Licence2"?"selected":""}>Licence 2</option>
+            <option value="Licence3" ${entree.licence==="Licence3"?"selected":""}>Licence 3</option>
+          </select>
+          <label for="ajout-groupe">Groupe <sup aria-label="Obligatoire">*</sup></label>
+          <select id="ajout-groupe" name="groupe" required>
+            <option value="">-- Sélectionner --</option>
+            <option value="A" ${entree.groupe==="A"?"selected":""}>A</option>
+            <option value="B" ${entree.groupe==="B"?"selected":""}>B</option>
+          </select>
+        `;
+      } else {
+        formFieldsContainer.innerHTML = `<p>Modification non prise en charge pour ce filtre.</p>`;
+      }
+    }
+
+    // Modification soumission formulaire
+    formAjout.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!filtreActifPourAjout) {
+        showMessage("Filtre non défini.", "error");
+        closePopupAjout();
+        return;
+      }
+      const formData = new FormData(formAjout);
+
+      if (filtreActifPourAjout === "matiere" || filtreActifPourAjout === "departement") {
+        const nom = formData.get("nom").trim();
+        if (!nom) {
+          showMessage("Le nom est obligatoire.", "error");
+          return;
+        }
+        if (dataFiltres[filtreActifPourAjout].includes(nom) && nom !== selectedOption) {
+          showMessage("Cette entrée existe déjà.", "error");
+          return;
+        }
+        // Modifier dans le tableau
+        const index = dataFiltres[filtreActifPourAjout].indexOf(selectedOption);
+        if (index !== -1) {
+          dataFiltres[filtreActifPourAjout][index] = nom;
+          showMessage("Modification réussie.");
+        }
+      } else if (filtreActifPourAjout === "professeur" || filtreActifPourAjout === "etudiant") {
+        const nom = formData.get("nom").trim();
+        const prenom = formData.get("prenom").trim();
+        const departement = formData.get("departement");
+        const licence = formData.get("licence");
+        const groupe = formData.get("groupe");
+
+        if (!nom || !prenom || !departement || !licence || !groupe) {
+          showMessage("Tous les champs sont obligatoires.", "error");
+          return;
+        }
+
+        // Trouver l’index de l’ancien
+        const index = dataFiltres[filtreActifPourAjout].findIndex(e => {
+          if (typeof e === "string") return e === selectedOption;
+          return (e.nom + " " + e.prenom) === selectedOption || JSON.stringify(e) === selectedOption;
+        });
+
+        if (index === -1) {
+          showMessage("Entrée non trouvée.", "error");
+          return;
+        }
+
+        // Construire nouvel objet modifié, garder même id si existant
+        const ancienId = dataFiltres[filtreActifPourAjout][index].id || generateUniqueId();
+
+        const nouvelleEntreeObj = {
+          id: ancienId,
+          nom,
+          prenom,
+          departement,
+          licence,
+          groupe
+        };
+
+        // Vérifier doublon sauf sur l’index modifié
+        if (dataFiltres[filtreActifPourAjout].some((e,i) => i !== index && JSON.stringify(e) === JSON.stringify(nouvelleEntreeObj))) {
+          showMessage("Modification crée un doublon.", "error");
+          return;
+        }
+
+        dataFiltres[filtreActifPourAjout][index] = nouvelleEntreeObj;
+        showMessage("Modification réussie.");
+      } else {
+        showMessage("Modification non prise en charge.", "error");
+      }
+      renderOptionsForFilter(filtreActifPourAjout);
+      closePopupAjout();
+    });
+
+    // --- Bouton Supprimer ---
+    btnSupprimer.addEventListener("click", e => {
+      e.preventDefault();
+      if (!activeFilter) {
+        showMessage("Sélectionnez un filtre avant de supprimer.", "error");
+        return;
+      }
+      if (!selectedOption) {
+        showMessage("Sélectionnez une option à supprimer.", "error");
+        return;
+      }
+
+      // Supprimer dans dataFiltres
+      if (dataFiltres[activeFilter]) {
+        if (activeFilter === "professeur" || activeFilter === "etudiant") {
+          // Trouver index par objet JSON ou nom complet
+          const index = dataFiltres[activeFilter].findIndex(e => {
+            if (typeof e === "string") return e === selectedOption;
+            return (e.nom + " " + e.prenom) === selectedOption || JSON.stringify(e) === selectedOption;
+          });
+          if (index !== -1) {
+            dataFiltres[activeFilter].splice(index, 1);
+            showMessage("Suppression réussie.");
+            selectedOption = null;
+            renderOptionsForFilter(activeFilter);
+            return;
+          }
+        } else {
+          // Suppression simple string
+          const index = dataFiltres[activeFilter].indexOf(selectedOption);
+          if (index !== -1) {
+            dataFiltres[activeFilter].splice(index, 1);
+            showMessage("Suppression réussie.");
+            selectedOption = null;
+            renderOptionsForFilter(activeFilter);
+            return;
+          }
+        }
+      }
+      showMessage("Suppression impossible.", "error");
+    });
+
+    // --- Bouton Lister ---
+    btnLister.addEventListener("click", e => {
+      e.preventDefault();
+      if (!activeFilter) {
+        showMessage("Sélectionnez un filtre avant d'afficher la liste.", "error");
+        return;
+      }
+      openPopupListeComplete(activeFilter);
+    });
+
+    // --- Gestion clic sur filtres ---
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter;
+        if (activeFilter === filter) {
+          activeFilter = null;
+          selectedOption = null;
+          renderOptionsForFilter(null);
+        } else {
+          activeFilter = filter;
+          selectedOption = null;
+          renderOptionsForFilter(activeFilter);
+        }
+        updateFilterButtonsUI();
+      });
+    });
+
+    // --- Gestion emploi du temps ---
+
+    // Charger emploi du temps depuis localStorage
+    function loadEmploiDuTemps() {
+      jours.forEach(jourDiv => {
+        const jour = jourDiv.dataset.jour;
+        const emploiJSON = localStorage.getItem("emploi-" + jour);
+        if (emploiJSON) {
+          const emploi = JSON.parse(emploiJSON);
+          const detailsDiv = jourDiv.querySelector(".details");
+          detailsDiv.textContent = `${emploi.matiere} (Prof: ${emploi.professeur || "-"}) [${emploi.debut} - ${emploi.fin}] Groupe ${emploi.groupe}`;
+        }
+      });
+    }
+
+    loadEmploiDuTemps();
+
+    // Ouvrir popup modifier emploi en cliquant sur jour
+    jours.forEach(jourDiv => {
+      jourDiv.addEventListener("click", () => {
+        currentJourEditing = jourDiv.dataset.jour;
+        popupEmploiJour.textContent = currentJourEditing;
+
+        // Charger données si existantes
+        const emploiJSON = localStorage.getItem("emploi-" + currentJourEditing);
+        if (emploiJSON) {
+          const emploi = JSON.parse(emploiJSON);
+          emploiMatiereInput.value = emploi.matiere;
+          emploiProfInput.value = emploi.professeur || "";
+          emploiGroupePopup.value = emploi.groupe || "";
+          emploiDebutInput.value = emploi.debut || "";
+          emploiFinInput.value = emploi.fin || "";
+        } else {
+          emploiMatiereInput.value = "";
+          emploiProfInput.value = "";
+          emploiGroupePopup.value = "";
+          emploiDebutInput.value = "";
+          emploiFinInput.value = "";
+        }
+        popupEmploiOverlay.style.display = "flex";
+        popupEmploiOverlay.focus();
+      });
+    });
+
+    emploiSaveBtn.addEventListener("click", () => {
+      // Validation simple
+      if (!emploiMatiereInput.value || !emploiGroupePopup.value || !emploiDebutInput.value || !emploiFinInput.value) {
+        showMessage("Veuillez remplir tous les champs obligatoires.", "error");
+        return;
+      }
+      // Sauvegarde
+      const emploi = {
+        matiere: emploiMatiereInput.value.trim(),
+        professeur: emploiProfInput.value.trim(),
+        groupe: emploiGroupePopup.value,
+        debut: emploiDebutInput.value,
+        fin: emploiFinInput.value
+      };
+      localStorage.setItem("emploi-" + currentJourEditing, JSON.stringify(emploi));
+      loadEmploiDuTemps();
+      showMessage("Emploi du temps sauvegardé.");
+      popupEmploiOverlay.style.display = "none";
+    });
+
+    emploiCancelBtn.addEventListener("click", () => {
+      popupEmploiOverlay.style.display = "none";
+    });
+
+    // --- Afficher tous les emplois ---
+    btnAfficherEmplois.addEventListener("click", () => {
+      popupEmploiTousList.innerHTML = "";
+      let anyEmploi = false;
+      jours.forEach(jourDiv => {
+        const jour = jourDiv.dataset.jour;
+        const emploiJSON = localStorage.getItem("emploi-" + jour);
+        if (emploiJSON) {
+          anyEmploi = true;
+          const emploi = JSON.parse(emploiJSON);
+          const li = document.createElement("li");
+          li.textContent = `${jour} : ${emploi.matiere} (Prof: ${emploi.professeur || "-"}) [${emploi.debut} - ${emploi.fin}] Groupe ${emploi.groupe}`;
+          popupEmploiTousList.appendChild(li);
+        }
+      });
+      if (!anyEmploi) {
+        popupEmploiTousList.innerHTML = "<p>Aucun emploi du temps trouvé.</p>";
+      }
+      popupEmploiTousOverlay.style.display = "flex";
+      popupEmploiTousOverlay.focus();
+    });
+
+    popupEmploiTousCloseBtn.addEventListener("click", () => {
+      popupEmploiTousOverlay.style.display = "none";
+    });
+
+    // --- Validation sélection département/licence/groupe ---
+    btnValiderSelection.addEventListener("click", () => {
+      if (!selectDepartement.value || !selectLicence.value || !selectGroupe.value) {
+        showMessage("Veuillez sélectionner tous les champs.", "error");
+        return;
+      }
+      showMessage(`Sélection validée : Département ${selectDepartement.value}, Licence ${selectLicence.value}, Groupe ${selectGroupe.value}.`);
+    });
+
+    // Fermer popup en cliquant hors popup
+    [popupAjoutOverlay, popupEmploiOverlay, popupListeOverlay, popupEmploiTousOverlay].forEach(overlay => {
+      overlay.addEventListener("click", e => {
+        if (e.target === overlay) {
+          overlay.style.display = "none";
+        }
+      });
+    });
+
+    // Fermer popup avec ESC
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        [popupAjoutOverlay, popupEmploiOverlay, popupListeOverlay, popupEmploiTousOverlay].forEach(overlay => {
+          if (overlay.style.display === "flex") {
+            overlay.style.display = "none";
+          }
+        });
+      }
+    });
+  </script>
+  <script>
+  const modal = document.getElementById('messageModal');
+  const openBtn = document.getElementById('openMessageBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const sendBtn = document.getElementById('sendBtn');
+  const etudiants = document.getElementById('etudiants');
+  const profs = document.getElementById('profs');
+  const tous = document.getElementById('tous');
+  const messageInput = document.getElementById('messageInput');
+
+  openBtn.onclick = () => {
+    modal.style.display = 'block';
+  };
+
+  cancelBtn.onclick = () => {
+    modal.style.display = 'none';
+    messageInput.value = '';
+    etudiants.checked = false;
+    profs.checked = false;
+    tous.checked = false;
+  };
+
+  tous.onchange = () => {
+    etudiants.checked = tous.checked;
+    profs.checked = tous.checked;
+  };
+
+  [etudiants, profs].forEach(cb => {
+    cb.onchange = () => {
+      tous.checked = etudiants.checked && profs.checked;
+    };
+  });
+
+  sendBtn.onclick = () => {
+    const destinataires = [];
+    if (tous.checked) destinataires.push("Tous");
+    else {
+      if (etudiants.checked) destinataires.push("Étudiants");
+      if (profs.checked) destinataires.push("Profs");
+    }
+
+    const message = messageInput.value.trim();
+    if (!destinataires.length || !message) {
+      alert("Veuillez cocher au moins un groupe et saisir un message.");
+      return;
+    }
+
+    // Simule l'envoi
+    console.log("Message à :", destinataires.join(", "));
+    console.log("Contenu :", message);
+    alert("Message envoyé à : " + destinataires.join(", "));
+
+    modal.style.display = 'none';
+    messageInput.value = '';
+    etudiants.checked = false;
+    profs.checked = false;
+    tous.checked = false;
+  };
+</script>
+
+</body>
+
+</html>

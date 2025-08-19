@@ -17,10 +17,11 @@ urlpatterns=[
     path("profil/",views.profil,name="profil"),
     path("parametres/",views.parametres,name="parametres"),
     path("chat/",views.chat,name="chat"),
-    path("modifier_compte/",views.modifier_compte,name="modification_compte"),
+
 
 
     #partie connexion
+    path("modifier_compte/",views.modifier_compte,name="modification_compte"),
     path("inscription/",views.inscription,name="inscription"),
     path("connexion/",views.connexion,name="connexion"),
     path("deconnection/",views.deconnexion,name="deconnection"),

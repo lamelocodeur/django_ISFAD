@@ -20,8 +20,13 @@
       <li><a href="disposition_lecons.html">Modifier la disposition d'apparition des leçons</a></li>
       <li><a href="{% url 'profil'%}">Modifier les informations du profil</a></li>
       <li><a href="{% url 'profil'%}#lien">Changer le mot de passe</a></li>
-      <li><a href="{% url 'deconnection'%}">Se deconnecter</a></li>
-      <!-- Tu peux ajouter d'autres options ici -->
+      <li><form action="{% url 'deconnection' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link text-white p-0" style="text-decoration:none;">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+    </button>
+</form>
+</li>
     </ul>
   </div>
 </body>

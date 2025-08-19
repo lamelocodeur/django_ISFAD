@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ISFAD - Accueil</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    background: #f9fafb;
+    color: #333;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  header.top-bar {
+      background-color: #003366;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-info img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background-color: white;
+      color: #003366;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 12px 18px;
+      text-decoration: none;
+      color: #003366;
+      font-weight: 500;
+    }
+
+    .dropdown a:hover {
+      background-color: #f0f0f0;
+    }
+  .logo {
+    font-weight: 700; font-size: 1.5rem; letter-spacing: 2px;
+  }
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  .nav-links a:hover {
+    color: #ffa500;
+  }
+  .main-content {
+    display: flex;
+    flex: 1;
+    padding: 2rem;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    width: 90%;
+    align-items: center;
+    min-height: 70vh;
+  }
+  .sidebar {
+    flex: 0 0 220px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+    padding: 1.5rem;
+    height: fit-content;
+  }
+  .sidebar h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #004080;
+  }
+  .sidebar ul {
+    list-style: none;
+    margin-top: 1rem;
+  }
+  .sidebar li + li {
+    margin-top: 0.75rem;
+  }
+  .sidebar button {
+    width: 100%;
+    background: #004080;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 0;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .sidebar button:hover,
+  .sidebar button:focus {
+    background: #003366;
+    outline: none;
+  }
+  /* Nouveau style pour la recherche */
+  .search-container {
+    margin-bottom: 1.5rem;
+  }
+  .search-container input[type="text"] {
+    width: calc(100% - 80px);
+    padding: 0.4rem 0.5rem;
+    font-size: 1rem;
+    border: 1.5px solid #004080;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    color: #004080;
+  }
+  .search-container button {
+    width: 70px;
+    padding: 0.45rem 0;
+    border: none;
+    background: #ffa500;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .search-container button:hover {
+    background: #cc8400;
+  }
+
+  .profile-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.75rem;
+  }
+  .profile-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgb(0 0 0 / 0.1);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* Pour icône favoris */
+  }
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgb(0 0 0 / 0.15);
+  }
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 1rem;
+    border: 3px solid #004080;
+  }
+  .profile-card h3 {
+    margin-bottom: 0.25rem;
+    color: #004080;
+    font-weight: 700;
+  }
+  .profile-card p {
+    margin-bottom: 0.25rem;
+    color: #555;
+  }
+  .status {
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+    min-width: 70px;
+  }
+  .status.online {
+    background: #d4f5d4;
+    color: #2a7d2a;
+    border: 1.5px solid #2a7d2a;
+  }
+  .status.offline {
+    background: #f5d4d4;
+    color: #a12a2a;
+    border: 1.5px solid #a12a2a;
+  }
+  .user-type {
+    font-weight: 600;
+    color: #004080;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    font-style: italic;
+  }
+  .card-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  .card-actions button {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .chat-btn {
+    background: #ffa500;
+    color: #fff;
+  }
+  .chat-btn:hover {
+    background: #cc8400;
+  }
+  .view-btn {
+    background: #004080;
+    color: #fff;
+  }
+  .view-btn:hover {
+    background: #002952;
+  }
+  .fav-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+  }
+  .fav-icon.favori {
+    color: gold;
+  }
+  .fav-icon:not(.favori) {
+    color: #bbb;
+  }
+  .footer {
+    background: #004080;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    margin-top: auto;
+  }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .user-info {
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: center;
+      }
+
+      header.top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .profile-grid {
+        grid-template-columns: 1fr !important; /* Une colonne en mobile */
+      }
+    }
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;}
+</style>
+</head>
+<body>
+<header class="top-bar">
+  <div class="logo">ISFAD Guinée</div>
+
+  <div class="menu-toggle" onclick="toggleDropdown()">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <nav class="nav-links">
+    <a href="general.html" onclick="showSection('dashboard')">🏠 Tableau de bord</a>
+    <a href="#" onclick="showSection('notifications')">🔔 Notifications</a>
+    <a href="public/chat.html" onclick="showSection('messages')">💬 Chat en Live</a>
+    <a href="page.html">🚪 Déconnexion</a>
+  </nav>
+
+  <div class="user-info">
+    <img src="https://formation-isfad-gn.org/moodle/theme/image.php/eguru/core/1745848149/u/f2_white" alt="Amara" />
+    <h5 style="margin: 0;">Connecté sous Amara</h5>
+  </div>
+
+  <div id="dropdown" class="dropdown">
+    <a href="#">Tableau de bord</a>
+    <a href="#">Profil</a>
+    <a href="#">Chat</a>
+    <a href="#">Paramètres</a>
+    <a href="#">Déconnexion</a>
+  </div>
+</header>
+
+<main class="main-content">
+  <aside class="sidebar">
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Rechercher par nom..." aria-label="Recherche par nom">
+      <button id="search-btn" aria-label="Bouton recherche">Rechercher</button>
+    </div>
+    <h2>Filtrer par matière</h2>
+    <ul id="filter-list">
+      <li><button data-matiere="all" class="active">Toutes les matières</button></li>
+      <li><button data-matiere="Informatique">Informatique</button></li>
+      <li><button data-matiere="Mathématiques">Mathématiques</button></li>
+      <li><button data-matiere="Langues">Langues</button></li>
+      <li><button data-matiere="Sciences Sociales">Sciences Sociales</button></li>
+      <li><button data-matiere="Administration">Administration</button></li>
+      <li><button id="show-favorites">⭐ Favoris</button></li>
+    </ul>
+  </aside>
+
+  <section id="profile-grid" class="profile-grid">
+    <!-- Cartes générées ici -->
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2025 ISFAD Guinée. Tous droits réservés.</p>
+</footer>
+
+<!-- Popup chat en plein temps réel -->
+<div id="chat-popup" style="
+  display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 90%;
+  max-height: 80vh;
+  background: white;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+">
+  <header style="padding: 10px; background:#3498db; color: white; border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+    <h2 id="chat-header-name" style="margin:0; font-size: 1.2em;">Chat</h2>
+    <button id="chat-close-btn" aria-label="Fermer le chat" style="background:none; border:none; color:white; font-size: 1.4em; cursor:pointer;">×</button>
+  </header>
+
+  <div id="chat-messages" style="flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; font-size: 14px;">
+    <!-- Messages ici -->
+  </div>
+
+  <form id="chat-form" style="display: flex; border-top: 1px solid #ccc;">
+    <textarea id="chat-input" placeholder="Écrire un message..." required
+      style="flex: 1; resize: none; padding: 10px; font-size: 14px; border:none; border-bottom-left-radius: 8px;"></textarea>
+    <button type="submit" style="background:#3498db; color:white; border:none; padding: 10px 15px; cursor: pointer; font-weight: bold; border-bottom-right-radius: 8px;">Envoyer</button>
+  </form>
+</div>
+
+<script>
+  const profils = [
+    { nom: "Dr. Mariam Diallo", matiere: "Informatique", image: "https://placehold.co/200x200", enLigne: true, typeUtilisateur: "Professeur", favori: false },
+    { nom: "Alpha Barry", matiere: "Mathématiques", image: "https://placehold.co/200x200", enLigne: false, typeUtilisateur: "Professeur", favori: false },
+    { nom: "Moussa Keita", matiere: "Langues", image: "https://placehold.co/200x200", enLigne: true, typeUtilisateur: "Professeur", favori: false },
+    { nom: "Fatoumata Camara", matiere: "Sciences Sociales", image: "https://placehold.co/200x200", enLigne: false, typeUtilisateur: "Professeur", favori: false },
+    { nom: "Admin Abdoulaye", matiere: "Administration", image: "https://placehold.co/200x200", enLigne: true, typeUtilisateur: "Administrateur", favori: false },
+    { nom: "Super Admin Binta", matiere: "Administration", image: "https://placehold.co/200x200", enLigne: true, typeUtilisateur: "Super Administrateur", favori: false }
+  ];
+
+  const container = document.getElementById("profile-grid");
+  const filterButtons = document.querySelectorAll("#filter-list button[data-matiere]");
+  const searchInput = document.getElementById("search-input");
+  const searchBtn = document.getElementById("search-btn");
+  const showFavoritesBtn = document.getElementById("show-favorites");
+
+  // Chat popup elements
+  const chatPopup = document.getElementById("chat-popup");
+  const chatHeaderName = document.getElementById("chat-header-name");
+  const chatMessages = document.getElementById("chat-messages");
+  const chatForm = document.getElementById("chat-form");
+  const chatInput = document.getElementById("chat-input");
+  const chatCloseBtn = document.getElementById("chat-close-btn");
+
+  let currentMatiere = "all";
+  let currentSearch = "";
+  let showingFavoritesOnly = false;
+
+  let currentChatUser = null; // utilisateur avec qui on discute
+
+  function creerCarte(profil) {
+    const card = document.createElement("div");
+    card.className = "profile-card";
+
+    const favIcon = document.createElement("span");
+    favIcon.className = "fav-icon";
+    favIcon.textContent = profil.favori ? "⭐" : "☆";
+    favIcon.title = "Marquer comme favori";
+    favIcon.addEventListener("click", e => {
+      e.stopPropagation();
+      profil.favori = !profil.favori;
+      afficherProfils(currentMatiere, currentSearch);
+    });
+    card.appendChild(favIcon);
+
+    const imgDiv = document.createElement("div");
+    imgDiv.className = "profile-image";
+    imgDiv.style.backgroundImage = `url('${profil.image}')`;
+    card.appendChild(imgDiv);
+
+    const nom = document.createElement("h3");
+    nom.textContent = profil.nom;
+    card.appendChild(nom);
+
+    const typeUser = document.createElement("p");
+    typeUser.className = "user-type";
+    typeUser.textContent = profil.typeUtilisateur;
+    card.appendChild(typeUser);
+
+    const matiere = document.createElement("p");
+    matiere.textContent = `Matière : ${profil.matiere}`;
+    card.appendChild(matiere);
+
+    const status = document.createElement("p");
+    status.className = "status";
+    if(showingFavoritesOnly){
+      status.classList.add("offline");
+      status.textContent = "Hors ligne";
+    } else {
+      if(profil.enLigne){
+        status.classList.add("online");
+        status.textContent = "En ligne";
+      } else {
+        status.classList.add("offline");
+        status.textContent = "Hors ligne";
+      }
+    }
+    card.appendChild(status);
+
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+
+    const chatBtn = document.createElement("button");
+    chatBtn.className = "chat-btn";
+    chatBtn.textContent = "Envoyer un message";
+    chatBtn.addEventListener('click', () => openChat(profil.nom));
+    actions.appendChild(chatBtn);
+
+    const viewBtn = document.createElement("button");
+    viewBtn.className = "view-btn";
+    viewBtn.textContent = "Voir profil";
+    actions.appendChild(viewBtn);
+
+    card.appendChild(actions);
+
+    return card;
+  }
+
+  function afficherProfils(matiere = "all", recherche = "") {
+    container.innerHTML = "";
+    recherche = recherche.trim().toLowerCase();
+    showingFavoritesOnly = false;
+
+    let profilsFiltres = profils;
+
+    if (matiere !== "all") {
+      profilsFiltres = profilsFiltres.filter(p => p.matiere === matiere);
+    }
+
+    if (recherche.length > 0) {
+      profilsFiltres = profilsFiltres.filter(p => p.nom.toLowerCase().includes(recherche));
+    }
+
+    if (profilsFiltres.length === 0) {
+      container.innerHTML = "<p style='grid-column:1/-1; text-align:center; color:#666;'>Aucun profil trouvé.</p>";
+      return;
+    }
+
+    profilsFiltres.forEach(profil => container.appendChild(creerCarte(profil)));
+  }
+
+  function afficherFavoris() {
+    container.innerHTML = "";
+    showingFavoritesOnly = true;
+
+    const favoris = profils.filter(p => p.favori);
+
+    if (favoris.length === 0) {
+      container.innerHTML = "<p style='grid-column:1/-1; text-align:center; color:#666;'>Aucun favori trouvé.</p>";
+      return;
+    }
+
+    favoris.forEach(profil => container.appendChild(creerCarte(profil)));
+  }
+
+  // Ouvre popup chat pour utilisateur
+  function openChat(nomUser) {
+    currentChatUser = nomUser;
+    chatHeaderName.textContent = `Chat avec ${nomUser}`;
+    chatPopup.style.display = "flex";
+    loadMessages();
+    chatInput.focus();
+  }
+
+  // Ferme popup chat
+  chatCloseBtn.addEventListener('click', () => {
+    chatPopup.style.display = "none";
+    currentChatUser = null;
+  });
+
+  // Charge les messages depuis localStorage pour le chat actuel
+  function loadMessages() {
+    chatMessages.innerHTML = '';
+    if (!currentChatUser) return;
+    const messages = getMessagesForUser(currentChatUser);
+    messages.forEach(msg => addMessageToChat(msg.text, msg.fromMe, false));
+    scrollToBottom();
+  }
+
+  // Ajoute un message dans le chat (option save = false pour ne pas sauvegarder à la lecture)
+  function addMessageToChat(text, fromMe, save=true) {
+    const msgDiv = document.createElement('div');
+    msgDiv.textContent = text;
+    msgDiv.style.margin = '5px 0';
+    msgDiv.style.padding = '8px 12px';
+    msgDiv.style.borderRadius = '15px';
+    msgDiv.style.maxWidth = '75%';
+    msgDiv.style.wordWrap = 'break-word';
+    msgDiv.style.alignSelf = fromMe ? 'flex-end' : 'flex-start';
+    msgDiv.style.backgroundColor = fromMe ? '#3498db' : '#eee';
+    msgDiv.style.color = fromMe ? 'white' : '#333';
+
+    chatMessages.appendChild(msgDiv);
+    if (save) saveMessage(currentChatUser, text, fromMe);
+    scrollToBottom();
+  }
+
+  // Scroll vers le bas du chat
+  function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Récupère les messages stockés pour un utilisateur
+  function getMessagesForUser(user) {
+    const all = JSON.parse(localStorage.getItem('chat_messages') || '{}');
+    return all[user] || [];
+  }
+
+  // Sauvegarde un message dans localStorage
+  function saveMessage(user, text, fromMe) {
+    const all = JSON.parse(localStorage.getItem('chat_messages') || '{}');
+    if(!all[user]) all[user] = [];
+    all[user].push({text, fromMe});
+    localStorage.setItem('chat_messages', JSON.stringify(all));
+  }
+
+  // Envoi message formulaire chat
+  chatForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text || !currentChatUser) return;
+
+    addMessageToChat(text, true);
+    chatInput.value = '';
+
+    // Exemple : réponse automatique pour test (à supprimer ou remplacer par vrai serveur)
+    setTimeout(() => {
+      addMessageToChat("Réponse automatique à : " + text, false);
+    }, 1200);
+  });
+
+  // Gestion filtres
+  filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      filterButtons.forEach(btn => btn.classList.remove("active"));
+      showFavoritesBtn.classList.remove("active");
+      button.classList.add("active");
+      currentMatiere = button.dataset.matiere;
+      currentSearch = searchInput.value;
+      afficherProfils(currentMatiere, currentSearch);
+    });
+  });
+
+  // Recherche bouton
+  searchBtn.addEventListener("click", () => {
+    currentSearch = searchInput.value;
+    afficherProfils(currentMatiere, currentSearch);
+  });
+
+  // Recherche Entrée
+  searchInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      currentSearch = searchInput.value;
+      afficherProfils(currentMatiere, currentSearch);
+    }
+  });
+
+  // Bouton favoris
+  showFavoritesBtn.addEventListener("click", () => {
+    filterButtons.forEach(btn => btn.classList.remove("active"));
+    showFavoritesBtn.classList.add("active");
+    afficherFavoris();
+  });
+
+  // Affichage initial des profils
+  afficherProfils();
+</script>
+</body>
+
+
+</html>

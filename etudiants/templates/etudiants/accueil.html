@@ -7,141 +7,224 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="{% static 'etudiants/css/accueil.css' %}">
-  <title>ISFAD - Accueil avec Popup</title>
-
+  <title>ISFAD | Accueil</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
   <!-- AOS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-
-
-  <!-- Header -->
   <header data-aos="fade-down" data-aos-duration="1200" data-aos-delay="200">
-    <div class="logo">ISFAD Guinee</div>
-  <div class="menu-toggle" onclick="toggleDropdown()">
-    <i class="fas fa-bars"></i>
-  </div>
+  <div class="logo">ISFAD Guinée</div>
+
   <div class="user-info">
     <img src="https://formation-isfad-gn.org/moodle/theme/image.php/eguru/core/1745848149/u/f2_white" alt="Amara" />
     <h5 style="margin: 0;">Connecté sous {{ user.first_name }} {{ user.last_name }}</h5>
+    <img id="az" src="" alt="photo de profil">
   </div>
-    <nav>
-      <ul>
-        <li><a href="#">Accueil</a></li>
 
-        <li><a href="{% url 'evaluation'%}">Evaluation et dévoir</a></li>
-        <li class="menu-deroulant">
-  <a href="#">Autres</a>
-       <i class="fas fa-chevron-down fleche"></i></a>
-  <ul class="sous-menu">
-    <li><a href="{% url 'profil'%}"><i class="fas fa-user"></i> Profil</a></li>
-    <li><a href="{% url 'chat'%}"><i class="fas fa-comments"></i> Chat</a></li>
-    <li><a href="{% url 'espace_etudiant'%}"><i class="fas fa-user-graduate" style="color: #2196f3;"></i>Espace Etudiants</a></li>
-    <li><a href="{% url 'choix_cours' %}#extra-cards">><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
-    <li><a href="{% url 'parametres'%}"><i class="fas fa-cog"></i> Paramètres</a></li>
-  </ul>
-</li>
+  <nav>
+    <ul style="font-weight: bold;">
+      <li><a href="#">Accueil</a></li>
+      <li><a href="{% url 'evaluation'%}">Évaluation et devoir</a></li>
 
-      </ul>
-    </nav>
-  </header>
-
+      <li class="menu-deroulant">
+        <a href="#">Autres <i class="fas fa-chevron-down fleche"></i></a>
+        <ul class="sous-menu">
+          <li><a href="{% url 'profil'%}"><i class="fas fa-user"></i> Profil</a></li>
+          <li><a href="{% url 'chat'%}"><i class="fas fa-comments"></i> Chat</a></li>
+          <li><a href="{% url 'espace_etudiant'%}"><i class="fas fa-user-graduate" style="color: #2196f3;"></i> Espace Étudiants</a></li>
+          <li><a href="{% url 'choix_cours' %}#extra-cards"><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
+          <li><a href="{% url 'parametres'%}"><i class="fas fa-cog"></i> Paramètres</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
   <section class="hero" data-aos="fade-down" data-aos-duration="1300" data-aos-delay="700">
     <h1 class="gsap-title">Bienvenue à l’ISFAD</h1>
     <p class="gsap-desc">L'excellence de la formation à distance au service de votre avenir académique et professionnel.</p>
   </section>
+  <div><h2 id="xw" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="600">Départements</h2></div>
 
-  <h2 id="xw" data-aos="fade-down" data-aos-duration="1500" data-aos-delay="600">Départements</h2>
+<section class="matières" id="matieres">
 
-
-  <section class="matières" id="matieres">
-    <div class="carte-matière" data-id="dev-communautaire" data-aos="fade-up" data-aos-duration="1100" data-aos-delay="100">
-      <h3><i class="fas fa-users"></i> Développement Communautaire</h3>
-      <p>Analyse, algèbre, statistiques, probabilité…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-          <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
+  <div class="carte-matière" data-id="dev-communautaire">
+    <h3><i class="fas fa-users"></i> Développement Communautaire</h3>
+    <p>Analyse, algèbre, statistiques, probabilité…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Développement" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
     </div>
-    <div class="carte-matière" data-id="economie" data-aos="fade-up" data-aos-duration="1250" data-aos-delay="200">
-      <h3><i class="fas fa-chart-line"></i> Économie</h3>
-      <p>Microéconomie, macroéconomie, développement…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-        <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
-    </div>
-    <div class="carte-matière" data-id="droit" data-aos="fade-up" data-aos-duration="1300" data-aos-delay="300">
-      <h3><i class="fas fa-balance-scale"></i> Droit</h3>
-      <p>Droit civil, droit du travail, droit public…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-        <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
-    </div>
-    <div class="carte-matière" data-id="latice" data-aos="fade-up" data-aos-duration="1350" data-aos-delay="400">
-      <h3><i class="fas fa-laptop-code"></i> Latice</h3>
-      <p>Programmation, bureautique, réseaux, base de données…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-        <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
-    </div>
-    <div class="carte-matière" data-id="divers" data-aos="fade-up" data-aos-duration="1350" data-aos-delay="500">
-      <h3><i class="fas fa-briefcase"></i> Divers</h3>
-      <p>Comptabilité, audit, management, finance…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-        <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
-    </div>
-    <div class="carte-matière" data-id="renforcement" data-aos="fade-up" data-aos-duration="1400" data-aos-delay="600">
-      <h3><i class="fas fa-chalkboard-teacher"></i> Renforcement des capacités</h3>
-      <p>Formation à distance, outils numériques, méthodes modernes…</p>
-      <div class="btn-container">
-        <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
-        <a href="{% url 'licence'%}" class="btn btn-rouge cours-btn">Cours</a>
-      </div>
-    </div>
-  </section>
+  </div>
 
-  <!-- Pourquoi ISFAD -->
-  <section id="pourquoi">
-    <h2 data-aos="fade-down" data-aos-duration="900" data-aos-delay="500">Pourquoi choisir l’ISFAD ?</h2>
-    <div>
-
-      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="900">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Flexibilité">
-        <h3>Flexibilité</h3>
-        <p>Étudiez à votre rythme, selon vos disponibilités, où que vous soyez.</p>
-      </div>
-
-      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="950">
-        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Qualité">
-        <h3>Qualité académique</h3>
-        <p>Des enseignants qualifiés et des programmes validés par le ministère.</p>
-      </div>
-
-      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
-        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Accompagnement">
-        <h3>Encadrement personnalisé</h3>
-        <p>Un suivi pédagogique régulier, à distance ou en présentiel selon les besoins.</p>
-      </div>
-
-      <div class="carte-motif" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1150">
-        <img src="https://cdn-icons-png.flaticon.com/512/681/681392.png" alt="Technologie">
-        <h3>Plateforme moderne</h3>
-        <p>Utilisation d’outils numériques performants pour l’apprentissage en ligne.</p>
-      </div>
-
+  <div class="carte-matière" data-id="economie">
+    <h3><i class="fas fa-chart-line"></i> Économie</h3>
+    <p>Microéconomie, macroéconomie, développement…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Economie" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
     </div>
-  </section>
+  </div>
+
+  <div class="carte-matière" data-id="droit">
+    <h3><i class="fas fa-balance-scale"></i> Droit</h3>
+    <p>Droit civil, droit du travail, droit public…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Droit" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="carte-matière" data-id="latice">
+    <h3><i class="fas fa-laptop-code"></i> Latice</h3>
+    <p>Programmation, bureautique, réseaux, base de données…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Latice" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="carte-matière" data-id="divers">
+    <h3><i class="fas fa-briefcase"></i> Divers</h3>
+    <p>Comptabilité, audit, management, finance…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Divers" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="carte-matière" data-id="renforcement">
+    <h3><i class="fas fa-chalkboard-teacher"></i> Renforcement des capacités</h3>
+    <p>Formation à distance, outils numériques, méthodes modernes…</p>
+    <div class="btn-container">
+      <button class="btn btn-bleu voir-plus-btn">Voir plus</button>
+      {% if request.user.is_authenticated and request.user.departement == "Renforcement" %}
+        <a href="{% url 'licence' %}" class="btn btn-rouge cours-btn">Cours</a>
+      {% else %}
+        <a href="#" class="btn btn-rouge cours-btn locked" style="text-decoration: none;">Cours</a>
+      {% endif %}
+    </div>
+  </div>
+
+</section>
+<!-- Section Pourquoi choisir ISFAD -->
+<section style="padding: 60px 40px; background-color: #eaf1ff;" id="pourquoi">
+  <h2 data-aos="fade-down" data-aos-duration="900" data-aos-delay="500">Pourquoi choisir l’ISFAD ?</h2>
+
+  <!-- Conteneur flex pour cartes horizontales -->
+  <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: nowrap; margin-top: 40px;">
+
+    <div class="carte-motif" style="width: 250px; height: 250px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="900">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Flexibilité" style="width: 60px; height: 60px; margin-bottom: 15px;">
+      <h3>Flexibilité</h3>
+      <p>Étudiez à votre rythme, selon vos disponibilités, où que vous soyez.</p>
+    </div>
+
+    <div class="carte-motif" style="width: 250px; height: 250px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="950">
+      <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Qualité" style="width: 60px; height: 60px; margin-bottom: 15px;">
+      <h3>Qualité académique</h3>
+      <p>Des enseignants qualifiés et des programmes validés par le ministère.</p>
+    </div>
+
+    <div class="carte-motif" style="width: 250px; height: 250px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Accompagnement" style="width: 60px; height: 60px; margin-bottom: 15px;">
+      <h3>Encadrement personnalisé</h3>
+      <p>Un suivi pédagogique régulier, à distance ou en présentiel selon les besoins.</p>
+    </div>
+
+    <div class="carte-motif" style="width: 250px; height: 250px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1150">
+      <img src="https://cdn-icons-png.flaticon.com/512/681/681392.png" alt="Technologie" style="width: 60px; height: 60px; margin-bottom: 15px;">
+      <h3>Plateforme moderne</h3>
+      <p>Utilisation d’outils numériques performants pour l’apprentissage en ligne.</p>
+    </div>
+
+  </div>
+</section>
+
+ <style>
+    /* Conteneur des cartes */
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: nowrap;
+      margin-top: 40px;
+    }
+
+    /* Cartes carrées et centrées */
+    .card {
+      background-color: #fff;
+      width: 250px;
+      height: 250px;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Effet hover */
+    .card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+/* Responsive : sur écrans < 1200px, réduire taille cartes */
+@media (max-width: 1200px) {
+  .carte-motif {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+/* Responsive : sur écrans < 768px, passer en colonne */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+    /* Icones */
+    .card .icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+  </style>
+<!-- AOS JS -->
+<script>
+  AOS.init();
+</script>
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
 
   <!-- Footer -->
   <footer>
@@ -203,6 +286,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".locked").forEach(function(link) {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+            let modal = new bootstrap.Modal(document.getElementById("accessModal"));
+            modal.show();
+        });
+    });
+});
+</script>
 <script>
   // Initialisation de la bibliothèque AOS pour les animations au scroll
   AOS.init({

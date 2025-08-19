@@ -1,509 +1,208 @@
-
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="{% static 'etudiants/css/section.css' %}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes Leçons</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <title>ISFAD | Section Cours </title>
+<style>
+/* Garde tout ton style existant */
+body { padding-top: 60px; }
+.navbar { width: 100%; position: fixed; top: 0; left: 0; z-index: 1000; background-color: #0d6efd; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+.navbar a, .navbar a:link, .navbar a:visited, .navbar a:hover, .navbar a:active { text-decoration: none !important; color: white !important; }
+#actionText { text-align: center; font-size: 20px; margin-top: 20px; color: #1d3557; }
+#actionButtons { display: flex; justify-content: center; gap: 15px; margin: 10px 0 25px 0; }
+#actionButtons button { background-color: #1d3557; color: white; border: none; border-radius: 6px; padding: 10px 18px; font-size: 14px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: transform 0.2s, background-color 0.2s; }
+#actionButtons button:hover { background-color: #457b9d; transform: scale(1.05); }
+/* Cartes et chapitre inchangés */
+ul.course-list { list-style: none; padding: 0; margin: 0; }
+.course-card { background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+.course-card.selected { border: 2px solid #457b9d; transform: scale(1.02); }
+.course-title { font-size: 24px; font-weight: bold; text-align: center; color: #1d3557; margin-bottom: 20px; }
+.chapters-list { list-style: none; padding: 0; margin: 0; }
+.chapter-card { background: #f9fafb; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); transition: background-color 0.3s ease, transform 0.2s; opacity: 0; transform: translateY(20px); animation: fadeInUp 0.5s forwards; cursor: default; user-select: none; }
+.chapter-card:hover { background-color: #e0e7ff; }
+.chapter-title { font-size: 18px; font-weight: 600; color: #2a3d66; margin-bottom: 6px; text-align: center; }
+.lesson-subtitle { font-size: 14px; font-style: italic; color: #555; text-align: center; margin-bottom: 12px; }
+.line { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.pdf-link, .video-link, .desc-button, .suivi-btn { padding: 8px 14px; border-radius: 5px; font-size: 13px; cursor: pointer; user-select: none; transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pdf-link, .video-link { background-color: #edf2fb; color: #2a3d66; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+.pdf-link.participer { background-color: #cbd5e1; color: #1e293b; font-weight: 600; }
+.desc-button { background-color: #cbd5e1; color: #1e293b; min-width: 90px; border: none; }
+.suivi-btn { color: white; min-width: 80px; border: none; font-weight: bold; text-align: center; flex-shrink: 0; }
+.suivi-true { background-color: #38a169; }
+.suivi-false { background-color: #e53e3e; }
+.pdf-link.participer:hover, .pdf-link:hover, .video-link:hover, .desc-button:hover, .suivi-btn:hover { transform: scale(1.05); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+.modal-content { border-radius: 10px; padding: 20px; }
+.modal-body { font-size: 16px; line-height: 1.5; color: #1d3557; text-align: center; }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+.amara { font-size: 2rem; font-weight: bold; color: #1E3A8A; text-align: center; margin: 20px 0; text-transform: uppercase; }
+.fofana { font-size: 1.2rem; color: #4B5563; margin-bottom: 30px; }
+.breadcrumb { color: white; font-size: 0.9rem; align-items: center; }
+.breadcrumb-link { color: white; text-decoration: none; }
+.breadcrumb-link:hover { text-decoration: underline; }
+.breadcrumb-current { font-weight: bold; }
+</style>
 </head>
 <body>
 
-  <div id="menu">
-    <div class="breadcrumbs" style="font-size: 14px; color: #555;">
-      <a href="{% url 'accueil' %}">Accueil</a> &gt;
-      <a href="{% url 'licence'%}">Licence</a> &gt;
-      <a href="{% url 'choix_cours'%}">Cours</a> &gt;
-      <span style="font-weight: bold;">Liste des cours</span>
+<!-- Navbar -->
+<nav class="navbar">
+   <div class="breadcrumb d-flex align-items-center gap-1">
+    <a href="{% url 'accueil'%}" class="breadcrumb-link">Accueil</a> &gt;
+    <a href="{% url 'licence'%}" class="breadcrumb-link">Licence</a> &gt;
+    <a href="{% url 'licence'%}" class="breadcrumb-link">Cours</a> &gt;
+    <span class="breadcrumb-current">Leçons</span>
     </div>
-    
-    <nav>
-      <a href="{% url 'profil'%}"><i class="fas fa-user"></i> Profil</a>
+    <a class="navbar-brand mx-auto" href="#"><i class="fas fa-book-open"></i> Mes Cours</a>
+    <div class="d-flex align-items-center gap-3">
+        <a href="{% url 'parametres'%}">⚙️ Paramètres</a>
+        <form action="{% url 'deconnection' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-link text-white p-0" style="text-decoration:none;">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </button>
+        </form>
+    </div>
+</nav>
 
-      <a href="{% url 'parametres'%}">⚙️ Parametres</a>
-    </nav>
+<div class="amara" id="actionText">Liste des cours</div>
+<p class="fofana">Nombre total de lecon  {{ total }}</p>
+
+{% if request.user.role == 'prof' %}
+<!-- Boutons Ajouter / Modifier / Supprimer -->
+<h1>Tu est un prof</h1>
+
+{% elif request.user.role == 'etud' %}
+<div class="container">
+  <ul class="course-list">
+    {% for lecon in lecons %}
+      <li class="course-card" data-id="{{ lecon.id }}" data-titre="{{ lecon.titre }}" data-chapitre="{{ lecon.chapitre }}" data-description="{{ lecon.description }}">
+        <div class="course-title">{{ lecon.titre }}</div>
+        <ul class="chapters-list">
+          <li class="chapter-card"
+              data-id="{{ lecon.id }}"
+              data-nom="Introduction"
+              data-chapitre="{{ lecon.chapitre }}"
+              data-description="{{ lecon.description }}"
+              data-lien="#">
+            <div class="chapter-title">{{ lecon.chapitre }}</div>
+            <div class="lesson-subtitle">Leçon {{ lecon.id }}</div>
+            <div class="line">
+              <a href="{{ lecon.lien_synchrone }}" class="pdf-link participer">Participer au point contrôle</a>
+              <a href="{{ lecon.video1 }}" class="video-link">🎥 Vidéo 1</a>
+              <a href="{{ lecon.video2 }}" class="video-link">🎥 Vidéo 2</a>
+              <a href="{{ lecon.pdf1.url }}" class="pdf-link">📄 PDF 1</a>
+            </div>
+            <div class="line">
+              <a href="{{ lecon.pdf2.url }}" class="pdf-link">📄 PDF 2</a>
+              <button class="desc-button" data-bs-toggle="modal" data-bs-target="#descModal" data-description="{{ lecon.description }}">
+                Description
+              </button>
+              <button class="suivi-btn suivi-false">Non suivi</button>
+            </div>
+          </li>
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- Modal Description -->
+<div class="modal fade" id="descModal" tabindex="-1" aria-labelledby="descModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="descModalLabel">Description du chapitre</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
   </div>
-
-  <h1>Liste des Cours avec Chapitres et Leçons</h1>
-    <div style="text-align: center; margin-bottom: 30px;">
-      <button onclick="ouvrirPopup()" style="background-color: #1d3557; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-        <i class="fas fa-tasks" style="color:#2196F3;"></i> Ajouter un cours
-      </button>
+</div>
+<!-- Modal Ajouter -->
+<div class="modal fade" id="modalAdd" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" action="{% url 'ajouter' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Ajouter une leçon</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="titre" class="form-control mb-2" placeholder="Titre" required>
+          <input type="text" name="chapitre" class="form-control mb-2" placeholder="Chapitre" required>
+          <textarea name="description" class="form-control" placeholder="Description" required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-primary">Ajouter</button>
+        </div>
+      </form>
     </div>
-
-
-
-
-
-<!-- Modal d'ajout de cours -->
-<!-- Popup d'ajout de cours -->
-<div id="coursPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000080; z-index:9999; justify-content:center; align-items:center;">
-  <div style="background:white; padding:20px; border-radius:10px; width:90%; max-width:400px; position:relative;">
-    <h2><i class="fas fa-tasks" style="color:#2196F3;"></i> Ajouter un cours</h2>
-    <label>Nom du cours :</label>
-    <input type="text" id="coursNom" placeholder="Ex: Statistiques" style="width:100%; padding:8px;"><br><br>
-
-    <label>Chapitre :</label>
-    <select id="coursChapitre" style="width:100%; padding:8px;">
-      <option value="Chapitre 1">Chapitre 1</option>
-      <option value="Chapitre 2">Chapitre 2</option>
-      <option value="Chapitre 3">Chapitre 3</option>
-      <option value="Chapitre 4">Chapitre 4</option>
-      <option value="Chapitre 5">Chapitre 5</option>
-      <option value="Chapitre 6">Chapitre 6</option>
-      <option value="Chapitre 7">Chapitre 7</option>
-      <option value="Chapitre 8">Chapitre 8</option>
-      <option value="Chapitre 9">Chapitre 9</option>
-    </select><br><br>
-
-    <label>Description :</label>
-    <textarea id="coursDescription" placeholder="Description du cours..." style="width:100%; padding:8px;"></textarea><br><br>
-
-    <label>Lien de partage d'écran :</label>
-    <input type="url" id="coursLien" placeholder="https://..." style="width:100%; padding:8px;"><br><br>
-
-    <button onclick="ajouterCours()" style="background:#1976d2; color:white; padding:10px 20px; border:none; border-radius:5px;">Ajouter</button>
-    <button onclick="fermerPopup()" style="margin-left:10px; padding:10px 20px;">Annuler</button>
   </div>
 </div>
 
-  <ul class="course-list" id="courseList"></ul>
 
-  <!-- Modal description -->
-  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Fermer la fenêtre">&times;</button>
-      <h2 id="modalTitle">Description du cours</h2>
-      <p id="modalDesc"></p>
-    </div>
-  </div>
-  <!-- Bouton "Ajouter un cours" -->
+{% endif %}
 
 
-  <script>
-    // Fonction pour générer dynamiquement 5 chapitres pour un cours donné
-function genererChapitres(baseTitre) {
-  const chapitres = [];
-  for (let i = 1; i <= 5; i++) {
-    chapitres.push({
-      titre: `Chapitre ${i} : ${baseTitre} thème ${i}`, // Titre du chapitre avec numéro et thème
-      lecon: `Leçon ${i}`,                             // Nom de la leçon
-      suivi: i % 2 === 1,                             // Statut suivi : true si impair, false sinon
-      // Liens dynamiques générés à partir du titre de base en minuscule sans espaces
-      pointControleLink: `https://example.com/${baseTitre.toLowerCase().replace(/\s/g, '')}-pointcontrole${i}`,
-      descriptionCours: `Ceci est une description détaillée du cours "${baseTitre}", chapitre ${i}. Ici vous pouvez expliquer les objectifs, les notions abordées, etc.`,
-      pdf1: `https://example.com/${baseTitre.toLowerCase().replace(/\s/g, '')}-pdf1-chapitre${i}.pdf`,
-      pdf2: `https://example.com/${baseTitre.toLowerCase().replace(/\s/g, '')}-pdf2-chapitre${i}.pdf`,
-      video1: `https://example.com/${baseTitre.toLowerCase().replace(/\s/g, '')}-video${i}a`,
-      video2: `https://example.com/${baseTitre.toLowerCase().replace(/\s/g, '')}-video${i}b`
-    });
-  }
-  return chapitres;
-}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Sélection des leçons
+let selectedLecon = null;
+document.querySelectorAll('.course-card').forEach(card => {
+  card.addEventListener('click', e => {
+    if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
+      document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedLecon = card;
+      // Activer les boutons prof
+      const editBtn = document.getElementById('btnEdit');
+      const delBtn = document.getElementById('btnDelete');
+      if(editBtn) editBtn.disabled = false;
+      if(delBtn) delBtn.disabled = false;
 
-// Liste des cours avec leurs chapitres générés
-const allCourses = [
-  {
-    titre: "Fonctions de base",
-    chapitres: genererChapitres("Fonctions de base")
-  },
-  {
-    titre: "Probabilités",
-    chapitres: genererChapitres("Probabilités")
-  }
-];
-
-// Récupération des éléments du DOM nécessaires pour l'affichage et la modal
-const courseListEl = document.getElementById('courseList');
-const modal = document.getElementById('modal');
-const modalTitle = document.getElementById('modalTitle');
-const modalDesc = document.getElementById('modalDesc');
-const modalCloseBtn = modal.querySelector('.modal-close');
-
-// Fonction pour ouvrir la modal avec un titre et une description
-function openModal(title, description) {
-  modalTitle.textContent = title;       // Mise à jour du titre
-  modalDesc.textContent = description;  // Mise à jour de la description
-  modal.style.display = 'flex';          // Affichage de la modal (flex pour centrage)
-}
-
-// Fonction pour fermer la modal
-function closeModal() {
-  modal.style.display = 'none';          // Cache la modal
-}
-
-// Événement pour fermer la modal en cliquant sur la croix
-modalCloseBtn.addEventListener('click', closeModal);
-
-// Événement pour fermer la modal en cliquant à l'extérieur du contenu
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) closeModal();
+      // Remplir modals
+      if(editBtn) {
+        document.getElementById('editLeconId').value = card.dataset.id;
+        document.getElementById('editTitre').value = card.dataset.titre;
+        document.getElementById('editChapitre').value = card.dataset.chapitre;
+        document.getElementById('editDescription').value = card.dataset.description;
+      }
+      if(delBtn) {
+        document.getElementById('deleteLeconId').value = card.dataset.id;
+        document.getElementById('deleteLeconName').textContent = card.dataset.titre;
+      }
+    }
+  });
 });
 
-// ----------- Gestion du suivi individuel en localStorage -----------
-
-// Récupère le statut "suivi" d'un chapitre d'un cours dans localStorage
-function getSuiviStatus(courseTitle, chapterTitle) {
-  const stored = localStorage.getItem('suiviStatus');
-  if (!stored) return null;  // Pas de données stockées, renvoie null
-  const statuses = JSON.parse(stored);
-  // Utilise l'opérateur optionnel pour éviter les erreurs si les clés n'existent pas
-  return statuses?.[courseTitle]?.[chapterTitle] ?? null;
-}
-
-// Enregistre le statut "suivi" d'un chapitre d'un cours dans localStorage
-function setSuiviStatus(courseTitle, chapterTitle, status) {
-  let statuses = {};
-  const stored = localStorage.getItem('suiviStatus');
-  if (stored) {
-    statuses = JSON.parse(stored);
+// Bouton Suivi
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("suivi-btn")) {
+    e.target.classList.toggle("suivi-true");
+    e.target.classList.toggle("suivi-false");
+    e.target.textContent = e.target.classList.contains("suivi-true") ? "Suivi" : "Non suivi";
   }
-  if (!statuses[courseTitle]) statuses[courseTitle] = {};
-  statuses[courseTitle][chapterTitle] = status;
-  localStorage.setItem('suiviStatus', JSON.stringify(statuses));
-}
+});
+
+// Description popup
+var descModal = document.getElementById('descModal')
+descModal.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  var description = button.getAttribute('data-description');
+  var modalBody = descModal.querySelector('#modalBody');
+  modalBody.textContent = description;
+});
+</script>
 
-// ----------- Fonction pour afficher la liste des cours et chapitres -----------
-
-function renderCourseList() {
-  courseListEl.innerHTML = ''; // Vide la liste avant d'afficher
-
-  allCourses.forEach(cours => {
-    // Création de la carte du cours
-    const courseCard = document.createElement('li');
-    courseCard.className = 'course-card';
-
-    // Titre du cours
-    const courseTitle = document.createElement('div');
-    courseTitle.className = 'course-title';
-    courseTitle.textContent = cours.titre;
-
-    // Liste des chapitres du cours
-    const chaptersList = document.createElement('ul');
-    chaptersList.className = 'chapters-list';
-
-    // Pour chaque chapitre du cours...
-    cours.chapitres.forEach((chapitre, idx) => {
-      const chapterCard = document.createElement('li');
-      chapterCard.className = 'chapter-card';
-
-      // Ajout d'une animation fadeInUp avec un délai progressif (pour effet en cascade)
-      chapterCard.style.animation = `fadeInUp 0.5s ease forwards`;
-      chapterCard.style.animationDelay = `${idx * 0.15}s`;
-
-      // Titre du chapitre
-      const chapterTitle = document.createElement('div');
-      chapterTitle.className = 'chapter-title';
-      chapterTitle.textContent = chapitre.titre;
-
-      // Sous-titre leçon
-      const lessonSubtitle = document.createElement('div');
-      lessonSubtitle.className = 'lesson-subtitle';
-      lessonSubtitle.textContent = chapitre.lecon;
-
-      // Ligne 1 : liens point contrôle, PDF1, PDF2, vidéo1, vidéo2
-      const line1 = document.createElement('div');
-      line1.className = 'line';
-
-      const pointControleLink = document.createElement('a');
-      pointControleLink.href = chapitre.pointControleLink;
-      pointControleLink.target = "_blank";
-      pointControleLink.className = 'pdf-link';
-      pointControleLink.textContent = 'Participer au point contrôle';
-
-      const pdf1Btn = document.createElement('a');
-      pdf1Btn.href = chapitre.pdf1;
-      pdf1Btn.target = "_blank";
-      pdf1Btn.className = 'pdf-link';
-      pdf1Btn.textContent = '📄 PDF 1';
-
-      const pdf2Btn = document.createElement('a');
-      pdf2Btn.href = chapitre.pdf2;
-      pdf2Btn.target = "_blank";
-      pdf2Btn.className = 'pdf-link';
-      pdf2Btn.textContent = '📄 PDF 2';
-
-      const video1 = document.createElement('a');
-      video1.href = chapitre.video1;
-      video1.target = "_blank";
-      video1.className = 'video-link';
-      video1.textContent = '🎥 Vidéo 1';
-
-      const video2 = document.createElement('a');
-      video2.href = chapitre.video2;
-      video2.target = "_blank";
-      video2.className = 'video-link';
-      video2.textContent = '🎥 Vidéo 2';
-
-      // Ajout des liens dans la ligne 1
-      line1.appendChild(pointControleLink);
-      line1.appendChild(pdf1Btn);
-      line1.appendChild(pdf2Btn);
-      line1.appendChild(video1);
-      line1.appendChild(video2);
-
-      // Ligne 2 : Boutons Description du cours et Suivi
-      const line2 = document.createElement('div');
-      line2.className = 'line';
-
-      // Bouton Description, ouvre modal avec description du cours
-      const descButton = document.createElement('button');
-      descButton.className = 'desc-button';
-      descButton.textContent = 'Description du cours';
-      descButton.addEventListener('click', e => {
-        e.stopPropagation(); // Empêche la propagation du clic (utile si besoin)
-        openModal(`Description - ${chapitre.titre}`, chapitre.descriptionCours);
-      });
-
-      // Récupération du statut suivi dans localStorage, sinon valeur par défaut
-      let suiviStatus = getSuiviStatus(cours.titre, chapitre.titre);
-      if (suiviStatus === null) suiviStatus = chapitre.suivi;
-
-      // Bouton Suivi (indique si le chapitre est suivi ou non)
-      const suiviBtn = document.createElement('button');
-      suiviBtn.className = 'suivi-button ' + (suiviStatus ? 'suivi-true' : 'suivi-false');
-      suiviBtn.textContent = suiviStatus ? 'Suivi' : 'Non suivi';
-
-      // Gestion du clic sur bouton suivi : bascule statut, mise à jour stockage et affichage
-      suiviBtn.addEventListener('click', e => {
-        e.stopPropagation();
-
-        // Inversion du statut suivi
-        suiviStatus = !suiviStatus;
-
-        // Mise à jour locale du suivi
-        setSuiviStatus(cours.titre, chapitre.titre, suiviStatus);
-
-        // Mise à jour visuelle du bouton
-        suiviBtn.textContent = suiviStatus ? 'Suivi' : 'Non suivi';
-        suiviBtn.className = 'suivi-button ' + (suiviStatus ? 'suivi-true' : 'suivi-false');
-
-        // Mise à jour du stockage global 'suivis' (pour suivi global/progression)
-        let allSuivis = JSON.parse(localStorage.getItem('suivis') || '{}');
-        if (!allSuivis[cours.titre]) allSuivis[cours.titre] = [];
-
-        if (suiviStatus && !allSuivis[cours.titre].includes(chapitre.titre)) {
-          allSuivis[cours.titre].push(chapitre.titre);
-        } else if (!suiviStatus && allSuivis[cours.titre].includes(chapitre.titre)) {
-          allSuivis[cours.titre] = allSuivis[cours.titre].filter(titre => titre !== chapitre.titre);
-        }
-
-        localStorage.setItem('suivis', JSON.stringify(allSuivis));
-      });
-
-      // Ajout des boutons dans la ligne 2
-      line2.appendChild(descButton);
-      line2.appendChild(suiviBtn);
-
-      // Assemblage complet de la carte chapitre
-      chapterCard.appendChild(chapterTitle);
-      chapterCard.appendChild(lessonSubtitle);
-      chapterCard.appendChild(line1);
-      chapterCard.appendChild(line2);
-
-      // Ajout du chapitre à la liste des chapitres
-      chaptersList.appendChild(chapterCard);
-    });
-
-    // Assemblage carte cours
-    courseCard.appendChild(courseTitle);
-    courseCard.appendChild(chaptersList);
-
-    // Ajout de la carte cours à la liste globale
-    courseListEl.appendChild(courseCard);
-  });
-}
-
-// Affiche la liste des cours dès le chargement du script
-renderCourseList();
-
-  </script>
-
-  <script>
-    // Ouvre la fenêtre modale pour ajouter un nouveau cours
-function openAddCourseModal() {
-  document.getElementById('addCourseModal').style.display = 'flex';
-}
-
-// Ferme la fenêtre modale d'ajout et vide le message d'information
-function closeAddCourseModal() {
-  document.getElementById('addCourseModal').style.display = 'none';
-  document.getElementById('addCourseMessage').innerHTML = '';
-}
-
-// Fonction pour ajouter un nouveau cours ou un chapitre à un cours existant
-function ajouterCours() {
-  // Récupération et nettoyage des valeurs saisies dans le formulaire
-  const titre = document.getElementById('newCourseName').value.trim();
-  const chapitreTitre = document.getElementById('newChapterName').value.trim();
-  const lecon = document.getElementById('newLesson').value.trim();
-  const desc = document.getElementById('newDescription').value.trim();
-  const msgEl = document.getElementById('addCourseMessage');
-
-  // Vérification que tous les champs sont bien remplis
-  if (!titre || !chapitreTitre || !lecon || !desc) {
-    msgEl.style.color = 'red';
-    msgEl.textContent = 'Veuillez remplir tous les champs.';
-    return; // Stop la fonction si un champ est vide
-  }
-
-  // Recherche si le cours existe déjà dans la liste globale allCourses
-  let coursExist = allCourses.find(c => c.titre === titre);
-
-  if (!coursExist) {
-    // Si le cours n'existe pas, on le crée avec son premier chapitre
-    allCourses.push({
-      titre: titre,
-      chapitres: [{
-        titre: chapitreTitre,
-        lecon: lecon,
-        suivi: false, // Par défaut, le chapitre n'est pas suivi
-        pointControleLink: "#",
-        descriptionCours: desc,
-        pdf1: "#",
-        pdf2: "#",
-        video1: "#",
-        video2: "#"
-      }]
-    });
-
-    // Message de succès pour ajout de cours et chapitre
-    msgEl.style.color = 'green';
-    msgEl.textContent = 'Cours et chapitre ajoutés avec succès.';
-  } else {
-    // Si le cours existe, on vérifie si le chapitre existe déjà
-    let chapitreExist = coursExist.chapitres.find(c => c.titre === chapitreTitre);
-
-    if (!chapitreExist) {
-      // Si le chapitre n'existe pas, on l'ajoute au cours existant
-      coursExist.chapitres.push({
-        titre: chapitreTitre,
-        lecon: lecon,
-        suivi: false,
-        pointControleLink: "#",
-        descriptionCours: desc,
-        pdf1: "#",
-        pdf2: "#",
-        video1: "#",
-        video2: "#"
-      });
-
-      // Message de succès pour ajout de chapitre
-      msgEl.style.color = 'green';
-      msgEl.textContent = 'Chapitre ajouté au cours existant.';
-    } else {
-      // Si le chapitre existe, on met à jour la leçon et la description
-      chapitreExist.lecon = lecon;
-      chapitreExist.descriptionCours = desc;
-
-      // Message d'information pour mise à jour de la leçon
-      msgEl.style.color = 'orange';
-      msgEl.textContent = 'Leçon mise à jour pour le chapitre existant.';
-    }
-  }
-
-  // Rafraîchit l'affichage de la liste des cours pour refléter les changements
-  renderCourseList();
-
-  // Ferme automatiquement la modale après 1.5 secondes
-  setTimeout(closeAddCourseModal, 1500);
-}
-
-  </script>
-  <script>
-    // Ouvre la popup pour ajouter un nouveau cours
-function ouvrirPopup() {
-  document.getElementById('coursPopup').style.display = 'flex';
-}
-
-// Ferme la popup d'ajout de cours
-function fermerPopup() {
-  document.getElementById('coursPopup').style.display = 'none';
-}
-
-// Ajoute un cours à la liste stockée dans localStorage
-function ajouterCours() {
-  // Récupère et nettoie les valeurs saisies dans le formulaire
-  const nom = document.getElementById('coursNom').value.trim();
-  const chapitre = document.getElementById('coursChapitre').value.trim();
-  const description = document.getElementById('coursDescription').value.trim();
-  const lien = document.getElementById('coursLien').value.trim();
-
-  // Vérifie que tous les champs sont remplis
-  if (!nom || !chapitre || !description || !lien) {
-    alert("Tous les champs sont obligatoires.");
-    return; // Arrête la fonction si un champ est vide
-  }
-
-  // Crée un objet représentant le nouveau cours
-  const cours = { nom, description, lien };
-
-  // Récupère les données actuelles ou crée un objet vide si rien n'est stocké
-  let donnees = JSON.parse(localStorage.getItem("coursData") || "{}");
-
-  // Si le chapitre n'existe pas encore, on l'initialise comme tableau vide
-  if (!donnees[chapitre]) donnees[chapitre] = [];
-
-  // Ajoute le nouveau cours au chapitre concerné
-  donnees[chapitre].push(cours);
-
-  // Enregistre les données mises à jour dans localStorage
-  localStorage.setItem("coursData", JSON.stringify(donnees));
-
-  // Ferme la popup après ajout réussi
-  fermerPopup();
-
-  // Rafraîchit l'affichage des cours pour prendre en compte l'ajout
-  afficherCours();
-}
-
-// Affiche tous les cours stockés dans localStorage sur la page
-function afficherCours() {
-  // Récupère le conteneur principal où afficher les cours
-  const container = document.getElementById('coursContainer');
-
-  // Vide le contenu précédent avant de réafficher la liste
-  container.innerHTML = '';
-
-  // Récupère les données des cours stockées localement
-  let donnees = JSON.parse(localStorage.getItem("coursData") || "{}");
-
-  // Parcourt chaque chapitre enregistré
-  for (const chapitre in donnees) {
-    // Crée une section dédiée à ce chapitre avec un titre
-    const section = document.createElement('div');
-    section.innerHTML = `<h2>${chapitre}</h2>`;
-
-    // Parcourt chaque cours dans ce chapitre
-    donnees[chapitre].forEach(cours => {
-      // Crée une carte visuelle pour présenter le cours
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      // Remplit la carte avec les informations du cours et les boutons d'action
-      card.innerHTML = `
-        <h3>${cours.nom}</h3>
-        <p>${cours.description}</p>
-        <button class="btn btn-bleu" onclick="window.open('${cours.lien}', '_blank')">Participer au point synchrone</button>
-        <a href="choix_licence.html" class="btn btn-rouge cours-btn" style="text-decoration:none;">Cours</a>
-      `;
-
-      // Ajoute la carte à la section du chapitre
-      section.appendChild(card);
-    });
-
-    // Ajoute la section complète au conteneur principal
-    container.appendChild(section);
-  }
-}
-
-// Charge et affiche les cours dès que la page est complètement chargée
-window.onload = afficherCours;
-
-  </script>
 </body>
 </html>

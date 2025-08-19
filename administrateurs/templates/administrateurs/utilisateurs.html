@@ -1,0 +1,376 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Utilisateurs - Dashboard ISFAD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'administrateurs/css/utilisateurs.css' %}">
+</head>
+<body>
+
+   <div class="sidebar" role="navigation" aria-label="Menu principal">
+  <h2>ISFAD</h2>
+
+  <ul>
+    <li><a href="{% url 'dashboard' %}">Tableau de bord</a></li>
+    <li><a href="{% url 'utilisateurs' %}" class="active">Utilisateurs</a></li>
+    <li><a href="{% url 'personnalisation' %}">Personnalisation</a></li>
+    <li><a href="{% url 'admin' %}">Chat en live</a></li>
+  </ul>
+
+  <div class="sidebar-center">
+    <div class="big-icon"></div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <a href="#">Lien 1</a>
+    <a href="#" class="icon-link">Lien 2 <span class="icon"></span></a>
+  </div>
+</div>
+
+  <main class="main-content">
+    <header>
+      <h1>Gestion des Utilisateurs</h1>
+      <div>
+        <strong>Bienvenue, Maina</strong>
+        <button id="amar"><a href="../accueil.html">Déconnexion</a></button>
+      </div>
+    </header>
+
+    <!-- Barre nav + filtre sous header -->
+    <div class="top-bar" role="region" aria-label="Menu de navigation et filtres utilisateurs">
+
+
+      <nav class="filter-menu" aria-label="Menu de filtrage utilisateurs">
+        <a href="#" data-filter="all" class="active">Tous</a>
+        <a href="#" data-filter="superAdmins">Super Admin</a>
+        <a href="#" data-filter="admins">Admin</a>
+        <a href="#" data-filter="profs">Profs</a>
+        <a href="#" data-filter="students">Étudiants</a>
+      </nav>
+    </div>
+
+    <section class="container" aria-live="polite" aria-relevant="additions removals">
+      <!-- Super Administrateurs -->
+      <div class="card" id="superAdminsCard">
+        <h2>Super Administrateurs</h2>
+        <div class="filter-section">
+          <button type="button" class="btn btn-primary" >Ajouter</button>
+          <button class="filter-btn" data-target="superAdminsFilterDropdown" aria-haspopup="true" aria-expanded="false">Filtrer</button>
+          <div class="filter-dropdown" id="superAdminsFilterDropdown" role="menu">
+            <label><input type="radio" name="superAdminsFilterField" value="nom" checked /> Nom</label>
+            <label><input type="radio" name="superAdminsFilterField" value="prenom" /> Prénom</label>
+            <label><input type="radio" name="superAdminsFilterField" value="role" /> Rôle</label>
+            <label><input type="radio" name="superAdminsFilterField" value="direction" /> Direction</label>
+            <label><input type="radio" name="superAdminsFilterField" value="email" /> Email</label>
+            <input type="text" class="filter-input" placeholder="Tapez pour filtrer..." id="superAdminsFilterInput" aria-label="Filtrer les super administrateurs"/>
+          </div>
+        </div>
+        <div class="count" id="superAdminsCount">Nombre : 0</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Rôle</th>
+              <th>Direction</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="superAdminsList"></tbody>
+        </table>
+      </div>
+
+      <!-- Administrateurs -->
+      <div class="card" id="adminsCard">
+        <h2>Administrateurs</h2>
+        <div class="filter-section">
+          <button type="button" class="btn btn-primary" >Ajouter</button>
+          <button class="filter-btn" data-target="adminsFilterDropdown" aria-haspopup="true" aria-expanded="false">Filtrer</button>
+          <div class="filter-dropdown" id="adminsFilterDropdown" role="menu">
+            <label><input type="radio" name="adminsFilterField" value="nom" checked /> Nom</label>
+            <label><input type="radio" name="adminsFilterField" value="prenom" /> Prénom</label>
+            <label><input type="radio" name="adminsFilterField" value="role" /> Rôle</label>
+            <label><input type="radio" name="adminsFilterField" value="direction" /> Direction</label>
+            <label><input type="radio" name="adminsFilterField" value="email" /> Email</label>
+            <input type="text" class="filter-input" placeholder="Tapez pour filtrer..." id="adminsFilterInput" aria-label="Filtrer les administrateurs"/>
+          </div>
+        </div>
+        <div class="count" id="adminsCount">Nombre : 0</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Rôle</th>
+              <th>Direction</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="adminsList"></tbody>
+        </table>
+      </div>
+
+      <!-- Profs -->
+      <div class="card" id="profsCard">
+        <h2>Profs</h2>
+        <div class="filter-section">
+          <button type="button" class="btn btn-primary" >Ajouter</button>
+          <button class="filter-btn" data-target="profsFilterDropdown" aria-haspopup="true" aria-expanded="false">Filtrer</button>
+          <div class="filter-dropdown" id="profsFilterDropdown" role="menu">
+            <label><input type="radio" name="profsFilterField" value="nom" checked /> Nom</label>
+            <label><input type="radio" name="profsFilterField" value="prenom" /> Prénom</label>
+            <label><input type="radio" name="profsFilterField" value="matieres" /> Matières</label>
+            <label><input type="radio" name="profsFilterField" value="departement" /> Département</label>
+            <label><input type="radio" name="profsFilterField" value="email" /> Email</label>
+            <input type="text" class="filter-input" placeholder="Tapez pour filtrer..." id="profsFilterInput" aria-label="Filtrer les professeurs"/>
+          </div>
+        </div>
+        <div class="count" id="profsCount">Nombre : 0</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Matières</th>
+              <th>Département</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="profsList"></tbody>
+        </table>
+      </div>
+
+      <!-- Étudiants -->
+
+      <div class="card" id="studentsCard">
+        <h2>Étudiants</h2>
+        <div class="filter-section">
+          <button type="button" class="btn btn-primary" >Ajouter</button>
+          <button class="filter-btn" data-target="studentsFilterDropdown" aria-haspopup="true" aria-expanded="false">Filtrer</button>
+          <div class="filter-dropdown" id="studentsFilterDropdown" role="menu">
+            <label><input type="radio" name="studentsFilterField" value="nom" checked /> Nom</label>
+            <label><input type="radio" name="studentsFilterField" value="prenom" /> Prénom</label>
+            <label><input type="radio" name="studentsFilterField" value="departement" /> Département</label>
+            <label><input type="radio" name="studentsFilterField" value="licence" /> Licence</label>
+            <label><input type="radio" name="studentsFilterField" value="email" /> Email</label>
+            <input type="text" class="filter-input" placeholder="Tapez pour filtrer..." id="studentsFilterInput" aria-label="Filtrer les étudiants"/>
+          </div>
+        </div>
+        <div class="count" id="studentsCount">Nombre : 0</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Département</th>
+              <th>Licence</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="studentsList"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Données exemples complètes avec email ajouté
+    const superAdmins = [
+      { nom: "Camara", prenom: "Ibrahim", role: "Super Admin", direction: "Direction Générale", email: "ibrahim.camara@isfad.com" },
+      { nom: "Touré", prenom: "Aissatou", role: "Super Admin", direction: "Direction Générale", email: "aissatou.toure@isfad.com" }
+    ];
+    const admins = [
+      { nom: "Diallo", prenom: "Fatoumata", role: "Admin", direction: "Direction Informatique", email: "fatou.diallo@isfad.com" },
+      { nom: "Bah", prenom: "Mamadou", role: "Admin", direction: "Direction Académique", email: "mamadou.bah@isfad.com" },
+      { nom: "Camara", prenom: "Aminata", role: "Admin", direction: "Direction Ressources Humaines", email: "aminata.camara@isfad.com" }
+    ];
+    const profs = [
+      { nom: "Condé", prenom: "Alpha", matieres: "Mathématiques, Informatique", departement: "Sciences", email: "alpha.conde@isfad.com" },
+      { nom: "Keita", prenom: "Moussa", matieres: "Physique", departement: "Sciences", email: "moussa.keita@isfad.com" },
+      { nom: "Soumah", prenom: "Aïssata", matieres: "Littérature", departement: "Lettres", email: "aissata.soumah@isfad.com" }
+    ];
+    const students = [
+      { nom: "Sylla", prenom: "Amadou", departement: "Sciences", licence: "Licence 1", email: "amadou.sylla@isfad.com" },
+      { nom: "Barry", prenom: "Kadiatou", departement: "Lettres", licence: "Licence 2", email: "kadiatou.barry@isfad.com" },
+      { nom: "Camara", prenom: "Mariama", departement: "Sciences", licence: "Licence 3", email: "mariama.camara@isfad.com" }
+    ];
+
+    // Variables pour DOM
+    const sections = {
+      superAdmins: {
+        listEl: document.getElementById('superAdminsList'),
+        countEl: document.getElementById('superAdminsCount'),
+        filterInput: document.getElementById('superAdminsFilterInput'),
+        filterDropdown: document.getElementById('superAdminsFilterDropdown'),
+        filterField: 'nom',
+        data: superAdmins
+      },
+      admins: {
+        listEl: document.getElementById('adminsList'),
+        countEl: document.getElementById('adminsCount'),
+        filterInput: document.getElementById('adminsFilterInput'),
+        filterDropdown: document.getElementById('adminsFilterDropdown'),
+        filterField: 'nom',
+        data: admins
+      },
+      profs: {
+        listEl: document.getElementById('profsList'),
+        countEl: document.getElementById('profsCount'),
+        filterInput: document.getElementById('profsFilterInput'),
+        filterDropdown: document.getElementById('profsFilterDropdown'),
+        filterField: 'nom',
+        data: profs
+      },
+      students: {
+        listEl: document.getElementById('studentsList'),
+        countEl: document.getElementById('studentsCount'),
+        filterInput: document.getElementById('studentsFilterInput'),
+        filterDropdown: document.getElementById('studentsFilterDropdown'),
+        filterField: 'nom',
+        data: students
+      }
+    };
+
+    // Fonction affichage d'une liste selon filtre
+    function renderList(section) {
+      const sec = sections[section];
+      const filterValue = sec.filterInput.value.trim().toLowerCase();
+      const field = sec.filterField;
+      const filtered = sec.data.filter(user => {
+        if (!filterValue) return true;
+        const val = (user[field] || "").toLowerCase();
+        return val.includes(filterValue);
+      });
+
+      sec.countEl.textContent = `Nombre : ${filtered.length}`;
+
+      const html = filtered.map(user => {
+        if (section === 'profs') {
+          return `<tr>
+            <td>${user.nom}</td>
+            <td>${user.prenom}</td>
+            <td>${user.matieres}</td>
+            <td>${user.departement}</td>
+            <td>${user.email}</td>
+          </tr>`;
+        } else if (section === 'students') {
+          return `<tr>
+            <td>${user.nom}</td>
+            <td>${user.prenom}</td>
+            <td>${user.departement}</td>
+            <td>${user.licence}</td>
+            <td>${user.email}</td>
+          </tr>`;
+        } else {
+          return `<tr>
+            <td>${user.nom}</td>
+            <td>${user.prenom}</td>
+            <td>${user.role}</td>
+            <td>${user.direction}</td>
+            <td>${user.email}</td>
+          </tr>`;
+        }
+      }).join('');
+      sec.listEl.innerHTML = html;
+    }
+
+    // Initial render all lists
+    Object.keys(sections).forEach(section => {
+      renderList(section);
+    });
+
+    // Gérer filtre textuel + champ filtré
+    Object.keys(sections).forEach(section => {
+      const sec = sections[section];
+
+      // Filtrer au tapé
+      sec.filterInput.addEventListener('input', () => {
+        renderList(section);
+      });
+
+      // Choix du champ filtre via radios
+      const radios = sec.filterDropdown.querySelectorAll('input[type=radio]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', e => {
+          sec.filterField = e.target.value;
+          renderList(section);
+        });
+      });
+    });
+
+    // Gestion ouverture/fermeture dropdown filtre (bouton + clic hors)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const targetId = btn.getAttribute('data-target');
+        const dropdown = document.getElementById(targetId);
+
+        // Toggle dropdown
+        const isShown = dropdown.classList.contains('show');
+
+        // Ferme tous les dropdowns
+        document.querySelectorAll('.filter-dropdown.show').forEach(dd => {
+          dd.classList.remove('show');
+          dd.previousElementSibling.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isShown) {
+          dropdown.classList.add('show');
+          btn.setAttribute('aria-expanded', 'true');
+          // Focus sur input
+          dropdown.querySelector('input.filter-input').focus();
+        }
+        e.stopPropagation();
+      });
+    });
+
+    // Fermer dropdown au clic ailleurs
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.filter-dropdown.show').forEach(dd => {
+        dd.classList.remove('show');
+        dd.previousElementSibling.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Gestion filtre menu du haut
+    const filterMenuLinks = document.querySelectorAll('.filter-menu a');
+    const navMenuLinks = document.querySelectorAll('.nav-menu a');
+
+    function clearActive(links) {
+      links.forEach(l => l.classList.remove('active'));
+    }
+
+    filterMenuLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const filter = link.dataset.filter;
+        clearActive(filterMenuLinks);
+        link.classList.add('active');
+
+        // Afficher les cartes selon filtre
+        Object.keys(sections).forEach(section => {
+          const card = document.getElementById(section + 'Card');
+          if(filter === 'all' || filter === section) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    navMenuLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        clearActive(navMenuLinks);
+        link.classList.add('active');
+      });
+    });
+
+  </script>
+</body>
+</html>

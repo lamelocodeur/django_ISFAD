@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for i in evaluation %}
+    <h1>{{i.titre}}</h1>
+    <p>{{i.description}}</p>
+    <p>{{i.matiere}}</p>
+    <p>{{i.nombre_essaie}}</p>
+    {% endfor %}
+</body>
+</html>

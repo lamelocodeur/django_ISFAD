@@ -1,0 +1,364 @@
+       .sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* top menu, center icon, bottom footer */
+  width: 240px;
+  height: 100vh; /* plein écran vertical */
+  position: fixed;
+  top: 0; left: 0;
+  background-color: #1e293b;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Titre ISFAD */
+.sidebar h2 {
+  margin-bottom: 40px;
+  font-size: 22px;
+}
+
+/* Menu liens : centré verticalement et horizontalement */
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centre horizontalement les <li> */
+  gap: 20px;
+  font-weight: 600;
+}
+
+.sidebar ul li {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+/* Liens */
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  display: inline-block;
+  border-radius: 6px;
+  width: 100%;
+  text-align: center;
+}
+
+.sidebar ul li a:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* Active sans soulignement mais fond léger */
+.sidebar ul li a.active,
+.sidebar ul li a.active:hover {
+  background-color: rgba(37, 99, 235, 0.7);
+  color: white;
+  text-decoration: none;
+}
+
+/* Zone centrale pour la grosse icône */
+.sidebar-center {
+  flex-grow: 1; /* prend tout l’espace entre menu et footer */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Grosse icône ronde */
+.big-icon {
+  width: 120px;
+  height: 120px;
+  background-color: white;
+  border-radius: 50%;
+  mask: url('https://cdn-icons-png.flaticon.com/512/2948/2948035.png') no-repeat center;
+  mask-size: contain;
+  -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/2948/2948035.png') no-repeat center;
+  -webkit-mask-size: contain;
+  cursor: pointer;
+}
+
+/* Footer bas de sidebar avec liens + petite icône */
+.sidebar-bottom {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Liens footer */
+.sidebar-bottom a {
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sidebar-bottom a:hover {
+  opacity: 0.8;
+}
+
+/* Petite icône dans footer */
+.sidebar-bottom a.icon-link .icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-color: white;
+  mask: url('https://cdn-icons-png.flaticon.com/512/25/25231.png') no-repeat center;
+  mask-size: contain;
+  -webkit-mask: url('https://cdn-icons-png.flaticon.com/512/25/25231.png') no-repeat center;
+  -webkit-mask-size: contain;
+}
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      display: flex;
+      background-color: #f4f7fc;
+      min-height: 100vh;
+      color: #333;
+    }
+/* Responsive : sidebar cachée sur petit écran */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+}
+
+    .main-content {
+    margin-left: 250px; /* même largeur que .sidebar */
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto; /* le contenu ici peut défiler */
+    }
+    header {
+      background-color: #fff;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Barre de navigation + filtre en ligne sous header */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      user-select: none;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Menu navigation principal centré */
+    .nav-menu {
+      display: flex;
+      gap: 25px;
+      justify-content: center;
+      flex: 1;
+      min-width: 200px;
+      flex-wrap: wrap;
+    }
+    .nav-menu a {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      background-color: #e2e8f0;
+      transition: background-color 0.3s, color 0.3s;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    /* Menu filtre à droite */
+    .filter-menu {
+      display: flex;
+      gap: 12px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .filter-menu a {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s, border-color 0.3s;
+      white-space: nowrap;
+      background-color: #e2e8f0;
+    }
+    .filter-menu a:hover,
+    .filter-menu a.active {
+      background-color: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+
+    /* Conteneur principal des cartes utilisateurs */
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    /* Cartes */
+    .card {
+      background-color: #fff;
+      padding: 20px 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    .card h2 {
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 12px;
+      font-size: 26px;
+      text-align: center;
+    }
+
+    /* Filtre interne bouton droite */
+    .filter-section {
+      margin-bottom: 15px;
+      text-align: right;
+      position: relative;
+      user-select: none;
+    }
+    .filter-btn {
+      padding: 8px 14px;
+      font-size: 15px;
+      border: 1px solid #2563eb;
+      border-radius: 6px;
+      background-color: white;
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+    .filter-btn:hover {
+      background-color: #e0e7ff;
+    }
+    .filter-dropdown {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      background: white;
+      border: 1px solid #2563eb;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 200px;
+      display: none;
+      padding: 12px;
+      z-index: 1000;
+    }
+    .filter-dropdown.show {
+      display: block;
+    }
+    .filter-dropdown label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2563eb;
+      cursor: pointer;
+    }
+    .filter-input {
+      margin-top: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 15px;
+      border: 1px solid #2563eb;
+      border-radius: 6px;
+      outline-color: #2563eb;
+    }
+    .count {
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    thead {
+      background-color: #e0e7ff;
+    }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      text-align: left;
+      word-wrap: break-word;
+    }
+    tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0; /* <- Important pour libérer l'espace */
+    width: 100%;     /* <- Prend toute la largeur */
+    padding: 10px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-menu,
+  .filter-menu {
+    justify-content: center;
+  }
+}
+
+#amar{
+  margin-left: 15px; padding: 6px 12px; border: none; background: #2563eb; color: white; border-radius: 5px;
+}
+#amar a{
+  text-decoration: none;color: white;
+}
+

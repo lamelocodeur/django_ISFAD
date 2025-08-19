@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -8,248 +7,181 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="{% static 'etudiants/css/faire_test.css' %}">
-
   <title>ISFAD | Test </title>
+  <style>
+    /* Conteneur des toasts */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    /* Style commun */
+    .toast {
+      color: white;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      font-weight: bold;
+      animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    }
+
+    /* Rouge = erreur */
+    .toast-error {
+      background: #d32f2f;
+    }
+
+    /* Vert = succès */
+    .toast-success {
+      background: #2e7d32;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(100%); }
+    }
+  </style>
 </head>
 <body>
 
-  <div class="container">
-    <a href="{% url 'evaluation'%}" id="az">Retour</a>
-    <h1>Quiz Test</h1>
+<div class="container">
+  <a href="{% url 'evaluation' %}" id="az">Retour</a>
+  <h1>Quiz Test</h1>
 
-    <div id="essais-display" style="text-align:center; font-weight:700; color:#1976d2; margin-bottom:20px;"></div>
+  <!-- Conteneur pour les toasts -->
+  <div id="toast-container"></div>
 
-    <div id="quiz" aria-live="polite" aria-atomic="true" aria-relevant="additions"></div>
+  <div id="quiz" aria-live="polite" aria-atomic="true" aria-relevant="additions"></div>
 
-    <div>
-      <button id="prev-btn" class="btn-nav" disabled>Précédent</button>
-      <button id="next-btn" class="btn-nav">Suivant</button>
-    </div>
-
-    <section id="edition-section">
-      <h3>Édition des questions (JSON)</h3>
-      <div id="max-attempts-container">
-        <label for="max-attempts">Nombre maximum d'essais autorisés :</label>
-        <input type="number" id="max-attempts" min="1" step="1" value="3" />
-      </div>
-      <textarea id="questions-json" aria-label="Édition des questions en JSON"></textarea>
-      <button id="btn-update-quiz">Mettre à jour le quiz</button>
-      <p><small>Format JSON : <code>[{"question":"Texte","answers":["r1","r2"],"correct":0,"points":1},...]</code></small></p>
-    </section>
+  <div id="quiz-controls">
+    <button id="prev-btn" class="btn-nav" disabled>Précédent</button>
+    <button id="next-btn" class="btn-nav">Suivant</button>
   </div>
+</div>
 
-  <script>
-    // Récupération de l'ID du test dans l'URL (ex: ?id=quiz1)
-    const urlParams = new URLSearchParams(window.location.search);
-    const testId = urlParams.get('id') || 'quiz1';
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const testId = urlParams.get('id') || '1';
 
-    // Questions initiales par défaut
-    let questions = [
-      {
-        question: "Quelle est la capitale de la Guinée ?",
-        answers: ["Conakry", "Londres", "Paris", "Madrid"],
-        correct: 0,
-        points: 2
-      },
-      {
-        question: "Combien de continents y a-t-il sur Terre ?",
-        answers: ["5", "6", "7", "8"],
-        correct: 2,
-        points: 3
-      },
-      {
-        question: "Quel est l'élément chimique de symbole O ?",
-        answers: ["Oxygène", "Or", "Osmium", "Plomb"],
-        correct: 0,
-        points: 5
-      }
-    ];
+  let questions = [];
+  let currentQuestionIndex = 0;
+  let selectedAnswers = [];
 
-    let currentQuestionIndex = 0;
-    let selectedAnswers = [];
+  const quizEl = document.getElementById("quiz");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
 
-    // Références DOM
-    const quizEl = document.getElementById("quiz");
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const jsonTextarea = document.getElementById("questions-json");
-    const btnUpdateQuiz = document.getElementById("btn-update-quiz");
-    const essaisDisplay = document.getElementById("essais-display");
-    const maxAttemptsInput = document.getElementById("max-attempts");
+  // Fonction Toast
+  function showToast(message, type = "error") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
 
-    /**
-     * Récupère le nombre d'essais déjà effectués depuis le localStorage
-     * @returns {number}
-     */
-    function getAttempts() {
-      const val = localStorage.getItem(`${testId}_essais`);
-      return val ? parseInt(val, 10) : 0;
+    toast.className = "toast " + (type === "success" ? "toast-success" : "toast-error");
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    // Supprimer le toast après 3s
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+
+  function displayQuestion(index) {
+    const q = questions[index];
+    if (!q) return;
+
+    let answersHTML = "";
+    q.answers.forEach((ans, i) => {
+      const checked = selectedAnswers[index] === i ? "checked" : "";
+      answersHTML += `
+        <label>
+          <input type="radio" name="answer" value="${i}" ${checked} />
+          ${ans}
+        </label>
+      `;
+    });
+
+    quizEl.innerHTML = `
+      <div class="question">${index + 1}. ${q.question}</div>
+      <div class="answers">${answersHTML}</div>
+    `;
+
+    prevBtn.disabled = index === 0;
+    nextBtn.textContent = index === questions.length - 1 ? "Valider" : "Suivant";
+  }
+
+  function afficherResultat() {
+    let score = 0;
+    let total = 0;
+
+    questions.forEach((q, i) => {
+      total += q.points || 1;
+      if (selectedAnswers[i] === q.correct) score += q.points || 1;
+    });
+
+    quizEl.innerHTML = `
+      <h2>Résultat du Quiz</h2>
+      <p>Note obtenue : <strong>${score} / ${total}</strong></p>
+    `;
+
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+
+    // ✅ Afficher un toast de succès
+    showToast("Quiz terminé avec succès 🎉", "success");
+  }
+
+  prevBtn.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      displayQuestion(currentQuestionIndex);
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    const selected = document.querySelector('input[name="answer"]:checked');
+
+    if (!selected) {
+      // ❌ Toast erreur
+      showToast("Veuillez sélectionner une réponse.");
+      return;
     }
 
-    /**
-     * Incrémente le compteur d'essais et sauvegarde dans localStorage
-     * @returns {number} Nouveau nombre d'essais
-     */
-    function incrementAttempts() {
-      let n = getAttempts() + 1;
-      localStorage.setItem(`${testId}_essais`, n);
-      return n;
+    selectedAnswers[currentQuestionIndex] = parseInt(selected.value);
+
+    if (currentQuestionIndex < questions.length - 1) {
+      currentQuestionIndex++;
+      displayQuestion(currentQuestionIndex);
+    } else {
+      afficherResultat();
     }
+  });
 
-    /**
-     * Met à jour l'affichage du nombre d'essais restants
-     */
-    function updateEssaisDisplay() {
-      const max = parseInt(maxAttemptsInput.value, 10);
-      const essais = getAttempts();
-      const restants = max - essais;
-
-      essaisDisplay.textContent = restants > 0
-        ? `Nombre d'essais restants : ${restants} / ${max}`
-        : `Vous avez atteint le nombre maximal d'essais (${max}). Le quiz est bloqué.`;
-    }
-
-    /**
-     * Affiche la question à l'index donné avec ses réponses
-     * @param {number} index 
-     */
-    function displayQuestion(index) {
-      updateEssaisDisplay();
-
-      // Bloquer si essais max atteints
-      if (getAttempts() >= parseInt(maxAttemptsInput.value)) {
-        prevBtn.disabled = true;
-        nextBtn.disabled = true;
-        quizEl.innerHTML = "<p>Quiz bloqué car nombre maximal d'essais atteint.</p>";
+  // Récupération des questions depuis Django
+  fetch(`/cours/quiz-data/${testId}/`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.length) {
+        quizEl.innerHTML = "<p>Pas de questions pour ce quiz.</p>";
         return;
       }
-
-      const q = questions[index];
-      if (!q) return;
-
-      // Génération des réponses en HTML
-      let answersHTML = "";
-      q.answers.forEach((ans, i) => {
-        const checked = selectedAnswers[index] === i ? 'checked' : '';
-        answersHTML += `
-          <label>
-            <input type="radio" name="answer" value="${i}" ${checked} />
-            ${ans}
-          </label>
-        `;
-      });
-
-      // Injection dans la page
-      quizEl.innerHTML = `
-        <div class="question">${index + 1}. ${q.question}</div>
-        <div class="answers">${answersHTML}</div>
-      `;
-
-      // Mise à jour des boutons
-      prevBtn.disabled = index === 0;
-      nextBtn.textContent = index === questions.length - 1 ? "Valider" : "Suivant";
-    }
-
-    /**
-     * Calcule et affiche le résultat final du quiz
-     */
-    function afficherResultat() {
-      let score = 0;
-      let total = 0;
-
-      questions.forEach((q, i) => {
-        total += q.points || 1;
-        if (selectedAnswers[i] === q.correct) {
-          score += q.points || 1;
-        }
-      });
-
-      const noteSur100 = (score / total) * 100;
-      const date = new Date().toLocaleDateString();
-      const essais = incrementAttempts();
-
-      // Sauvegarde dans localStorage
-      localStorage.setItem(`${testId}_status`, 'termine');
-      localStorage.setItem(`${testId}_note`, noteSur100.toFixed(0));
-      localStorage.setItem(`${testId}_date`, date);
-      localStorage.setItem(`${testId}_essais`, essais);
-
-      // Affichage résultat
-      quizEl.innerHTML = `
-        <h2>Résultat du Quiz</h2>
-        <p>Note obtenue : <strong>${noteSur100.toFixed(0)} / 100</strong></p>
-        <p>Date : <strong>${date}</strong></p>
-        <p>Essais effectués : <strong>${essais}</strong></p>
-      `;
-
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      updateEssaisDisplay();
-    }
-
-    // Événement clic bouton "Suivant" / "Valider"
-    nextBtn.addEventListener("click", () => {
-      if (getAttempts() >= parseInt(maxAttemptsInput.value)) return;
-
-      const selected = document.querySelector('input[name="answer"]:checked');
-      if (!selected) {
-        alert("Veuillez sélectionner une réponse.");
-        return;
-      }
-
-      selectedAnswers[currentQuestionIndex] = parseInt(selected.value);
-
-      if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-        displayQuestion(currentQuestionIndex);
-      } else {
-        afficherResultat();
-      }
+      questions = data;
+      selectedAnswers = new Array(questions.length).fill(null);
+      displayQuestion(currentQuestionIndex);
+    })
+    .catch(err => {
+      console.error("Erreur récupération quiz:", err);
+      quizEl.innerHTML = "<p>Impossible de charger le quiz.</p>";
     });
+</script>
 
-    // Événement clic bouton "Précédent"
-    prevBtn.addEventListener("click", () => {
-      if (getAttempts() >= parseInt(maxAttemptsInput.value)) return;
-
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        displayQuestion(currentQuestionIndex);
-      }
-    });
-
-    // Événement clic bouton "Mettre à jour le quiz" (édition JSON)
-    btnUpdateQuiz.addEventListener("click", () => {
-      try {
-        const data = JSON.parse(jsonTextarea.value);
-
-        if (!Array.isArray(data)) throw new Error("Le JSON doit être un tableau");
-
-        for (const q of data) {
-          if (!q.question || !Array.isArray(q.answers) || typeof q.correct !== 'number') {
-            alert("Chaque question doit avoir : question, réponses (array), et index correct.");
-            return;
-          }
-          if (!q.points) q.points = 1; // Par défaut 1 point
-        }
-
-        // Mise à jour des questions
-        questions = data;
-        selectedAnswers = [];
-        currentQuestionIndex = 0;
-        displayQuestion(0);
-        alert("Questions mises à jour avec succès !");
-      } catch (err) {
-        alert("Erreur JSON : " + err.message);
-      }
-    });
-
-    // Mise à jour affichage essais lors du changement du nombre max
-    maxAttemptsInput.addEventListener("input", updateEssaisDisplay);
-
-    // Initialisation au chargement
-    jsonTextarea.value = JSON.stringify(questions, null, 2);
-    updateEssaisDisplay();
-    displayQuestion(currentQuestionIndex);
-  </script>
 </body>
 </html>
